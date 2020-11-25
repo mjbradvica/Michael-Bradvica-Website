@@ -6,7 +6,7 @@
     <title>@ViewData["Title"] - Michael Bradvica</title>
     <link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/lib/bulma/css/bulma.min.css" />
+    <link rel="stylesheet" href="~/lib/pure/pure-min.css" />
 </head>
 <body>
 
@@ -21,12 +21,10 @@
 </div>
 
 <footer class="footer">
-    <div class="content has-text-centered">
-        <p>Michael Bradvica.com - &copy; @DateTime.UtcNow.Year - Built with ASP.NET Core MVC, hosted on AWS.</p>
-    </div>
+    <p>Michael Bradvica</p>
+    <p><a asp-controller="Home" asp-action="About" class="link">About</a></p>
 </footer>
 
-<script src="~/js/site.js" asp-append-version="true"></script>
-@RenderSection("Scripts", false)
+@await RenderSectionAsync("Scripts", false)
 </body>
 </html>
