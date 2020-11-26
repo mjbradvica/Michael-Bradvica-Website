@@ -7,22 +7,10 @@ namespace MB.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly HomeViewModel _viewModel;
-
-        public HomeController()
-        {
-            var blogPosts = new List<Tuple<string, string>>
-            {
-                new Tuple<string, string>("OneLineADay", "One Line A Day"),
-            };
-
-            _viewModel = new HomeViewModel(blogPosts);
-        }
-
         [Route("")]
         public IActionResult Index()
         {
-            return View(_viewModel);
+            return View();
         }
 
         [Route("About")]

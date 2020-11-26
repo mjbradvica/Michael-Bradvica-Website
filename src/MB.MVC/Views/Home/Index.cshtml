@@ -1,15 +1,5 @@
-﻿@model HomeViewModel
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="pure-g">
-    <div class="pure-u-1-5"></div>
-    <div class="pure-u-3-5">
-        @foreach (var (route, title) in Model.BlogArticles)
-        {
-            <a asp-controller="Blog" asp-action="@route" class="link">@title</a>
-        }
-    </div>
-    <div class="pure-u-1-5"></div>
-</div>
+<a asp-controller="Blog" asp-action="OneLineADay" class="has-text-grey is-size-3">One Line A Day</a>

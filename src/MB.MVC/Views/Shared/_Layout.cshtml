@@ -1,28 +1,56 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - Michael Bradvica</title>
     <link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet" type="text/css">
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/lib/pure/pure-min.css" />
+    <link rel="stylesheet" href="~/css/site.css"/>
+    @*<link rel="stylesheet" href="~/lib/pure/pure-min.css"/>*@
+    <link rel="stylesheet" href="~/lib/bulma/css/bulma.min.css"/>
 </head>
 <body>
-
-<header>
-    <nav></nav>
-</header>
+    
+<nav class="navbar container mt-4" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a asp-controller="Home" asp-action="Index" class="has-text-dark is-size-5">Michael Bradvica</a>
+    </div>
+    <div class="navbar-end">
+        <div class="navbar-item">
+            <a href="https://dev.to/mjbradvica">
+                <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="DEV.to" height="30" width="30">
+            </a>
+        </div>
+        <div class="navbar-item">
+            <a href="https://github.com/mjbradvica">
+                <img src="https://img.icons8.com/material-sharp/2x/github.png" alt="GitHub" height="30" width="30"/>
+            </a>
+        </div>
+        <div class="navbar-item">
+            <a href="https://www.linkedin.com/in/mjbradvica/">
+                <img src="https://cdn.onlinewebfonts.com/svg/img_435965.png" alt="LinkedIn" height="30" width="30"/>
+            </a>
+        </div>
+        <div class="navbar-item">
+            <a href="https://twitter.com/bradvicamichael">
+                <img src="https://seeklogo.net/wp-content/uploads/2015/09/twitter-icon-circle-logo.png" alt="Twitter" height="30" width="30"/>
+            </a>
+        </div>
+    </div>
+</nav>
 
 <div class="container">
     <main role="main">
         @RenderBody()
     </main>
+    <hr />
 </div>
 
-<footer class="footer">
-    <p>Michael Bradvica</p>
-    <p><a asp-controller="Home" asp-action="About" class="link">About</a></p>
+<footer class="has-text-centered">
+    <p class="content has-text-dark">Michael Bradvica</p>
+    <p>
+        <a asp-controller="Home" asp-action="About" class="has-text-grey">About</a>
+    </p>
 </footer>
 
 @await RenderSectionAsync("Scripts", false)
