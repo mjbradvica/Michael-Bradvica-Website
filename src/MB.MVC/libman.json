@@ -3,10 +3,6 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "pure@2.0.3",
-      "destination": "wwwroot/lib/pure"
-    },
-    {
       "library": "bulma@0.9.1",
       "destination": "wwwroot/lib/bulma"
     }
