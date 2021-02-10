@@ -1,2 +1,2 @@
 ﻿hljs.initHighlightingOnLoad();
-hljs.hightlightAll();
+hljs.highlightAll();
