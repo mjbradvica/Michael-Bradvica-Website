@@ -4,7 +4,7 @@ namespace MB.MVC.Controllers
 {
     public class BlogController : Controller
     {
-        [Route("One-Line-A-Day")]
+        [Route("one-line-a-day")]
         public IActionResult OneLineADay()
         {
             return View();

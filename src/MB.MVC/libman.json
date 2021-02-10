@@ -5,6 +5,10 @@
     {
       "library": "bulma@0.9.1",
       "destination": "wwwroot/lib/bulma"
+    },
+    {
+      "library": "highlight.js@10.6.0",
+      "destination": "wwwroot/lib/highlight"
     }
   ]
 }

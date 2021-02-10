@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using MB.MVC.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace MB.MVC.Controllers
 {
