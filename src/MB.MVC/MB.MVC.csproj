@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-    <CodeAnalysisRuleSet>../../config/styles.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
