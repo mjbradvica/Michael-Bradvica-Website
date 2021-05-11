@@ -8,9 +8,9 @@
         public IActionResult OneLineADay() => View();
 
         [Route("chain-of-responsibility-adopted-for-dependency-injection")]
-        public IActionResult ChainOfResponsibility() => View();
+        public IActionResult ChainOfResponsibilityForDependencyInjection() => View();
 
-        [Route("purpose-of-the-repository")]
-        public IActionResult PurposeOfTheRepository() => View();
+        [Route("the-purpose-of-the-repository-pattern")]
+        public IActionResult PurposeOfTheRepositoryPattern() => View();
     }
 }
