@@ -12,7 +12,7 @@
     <script src="lib/highlight/highlight.min.js"></script>
     <script src="~/scripts/site.js"></script>
 </head>
-<body>
+<body class="is-unselectable" onmousedown="() => false">
     
 <nav class="navbar container mt-4 block level" role="navigation" aria-label="main navigation">
     <div class="navbar-brand level-left">
@@ -45,7 +45,7 @@
 </div>
 
 <footer class="has-text-centered">
-    <p class="content has-text-dark">Michael Bradvica - &copy; @DateTime.UtcNow.Year</p>
+    <p class="content has-text-dark">Michael Bradvica - &copy; @DateTime.UtcNow.Year - All Rights Reserved</p>
     <p>
         <a asp-controller="Home" asp-action="About" class="has-text-grey">About</a>
     </p>

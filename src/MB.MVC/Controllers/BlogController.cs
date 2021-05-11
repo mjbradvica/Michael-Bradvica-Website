@@ -9,5 +9,8 @@
 
         [Route("chain-of-responsibility-adopted-for-dependency-injection")]
         public IActionResult ChainOfResponsibility() => View();
+
+        [Route("purpose-of-the-repository")]
+        public IActionResult PurposeOfTheRepository() => View();
     }
 }

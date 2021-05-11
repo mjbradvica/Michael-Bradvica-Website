@@ -1,4 +1,4 @@
-﻿<h5 class="title is-5 block">Chain of Responsibility Adopted for Dependency Injection</h5>
+﻿<h4 class="title is-4 block">Chain of Responsibility Adopted for Dependency Injection</h4>
 <section class="section">
     <article class="content">
         <p>
@@ -8,7 +8,7 @@
             Unfortunately, many examples fail to show how to properly integrate the pattern into your application. You end up with bloated classes that look something like this.
         </p>
         <pre>
-        <code>
+            <code>
             public class BadChainCreationHandler : IRequestHandler&lt;Widget&gt;
             {
                 private readonly IFirstDependency _firstDependency;
@@ -31,8 +31,8 @@
                     return await firstHandler.Handle(widget);
                 }
             }
-        </code>
-    </pre>
+            </code>
+        </pre>
         <p>
             We have an application service handler that does something with a fictitious widget object. The handler is responsible for both the creation of the chain and its execution. In the spirit of SRP, the handler should not be aware of how the chain is created.
         </p>
