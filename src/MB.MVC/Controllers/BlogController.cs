@@ -30,5 +30,23 @@
 
         [Route("just-because-you-can-does-not-mean-you-should")]
         public IActionResult JustBecauseYouCanDoesNotMeanYouShould() => View();
+
+        [Route("routing-with-variables-in-blazor")]
+        public IActionResult RoutingWithVariablesInBlazor() => View();
+
+        [Route("refactoring-form-inputs-in-blazor")]
+        public IActionResult RefactoringFormInputsInBlazor() => View();
+
+        [Route("using-sass-in-asp-net-core")]
+        public IActionResult UsingSassInAspNetCore() => View();
+
+        [Route("blazor-in-memory-state-management-1-3")]
+        public IActionResult BlazorInMemoryStateManagementPartOneOfThree() => View();
+
+        [Route("blazor-in-memory-state-management-2-3")]
+        public IActionResult BlazorInMemoryStateManagementPartTwoOfThree() => View();
+
+        [Route("blazor-in-memory-state-management-3-3")]
+        public IActionResult BlazorInMemoryStateManagementPartThreeOfThree() => View();
     }
 }

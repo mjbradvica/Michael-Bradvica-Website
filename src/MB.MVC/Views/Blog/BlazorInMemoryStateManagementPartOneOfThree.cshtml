@@ -1,0 +1,207 @@
+﻿<blog-post title="Blazor In-Memory State Management part 1 of 3">
+    <p>In traditional web applications, state is stored in the database, cookies, or URL. While all those options are still viable in Blazor, we have a new technique available called in-memory state. Our state can be updated via publishing an event from a component, to which any other component in our application may subscribe. The barrier to entry for creating our in-memory state container is very small.</p>
+
+    <p>Note: I am using the standard Blazor template that is generated when creating any new Blazor project.</p>
+
+    <p>A quick overview of what we will be implementing:</p>
+    <ul>
+        <li>Events we will publish</li>
+        <li>A composition root for our events</li>
+        <li>A way for components to subscribe and un-subscribe from events</li>
+    </ul>
+    <p>
+        First, an interface to describe an event:
+    </p>
+    <pre>
+    <code>
+            public interface IAction
+            {
+            }
+        </code>
+    </pre>
+    <p>
+        We are using a blank interface to constrain which objects are events.
+    </p>
+    <p>
+        We now need to define a few events:
+    </p>
+    <pre>
+    <code>
+            public class DecreaseCounter : IAction
+            {
+            }
+        </code>
+    </pre>
+    <p>
+        and...
+    </p>
+    <pre>
+    <code>
+            public class IncreaseCounter : IAction
+            {
+            }
+        </code>
+    </pre>
+    <p>
+        These two classes will represent a type of event that we wish to propagate throughout the entire application. We now need to add a composition root that will be the source for publishing our events.
+    </p>
+    <pre>
+    <code>
+            public class StateStore
+            {
+                private readonly Dictionary&lt;Type, Action&lt;IAction&gt;&gt; _actions;
+
+                public StateStore()
+                {
+                    _actions = new Dictionary&lt;Type, Action&lt;IAction&gt;&gt;
+                    {
+                        { typeof(IncreaseCounter), action =&gt; IncreaseCounterHandler?.Invoke(this, action as IncreaseCounter) },
+                        { typeof(DecreaseCounter), action =&gt; DecreaseCounterHandler?.Invoke(this, action as DecreaseCounter) },
+                    };
+                }
+
+                public void Publish(IAction action)
+                {
+                    _actions[action.GetType()].Invoke(action);
+                }
+
+                public event EventHandler&lt;IncreaseCounter&gt; IncreaseCounterHandler;
+                public event EventHandler&lt;DecreaseCounter&gt; DecreaseCounterHandler;
+            }
+        </code>
+    </pre>
+    <p>
+        Our StateStore has the following properties and methods:
+    </p>
+    <ul>
+        <li>A Dictionary that acts as a switch-case that will trigger an event handler depending on which event was published</li>
+        <li>A "Publish" method that our components will use to publish an event</li>
+        <li>Numerous events that components may choose to subscribe to</li>
+    </ul>
+    <p>
+        We need to ensure that any component in our application can have access to our StateStore. To enable this, we will pass the StateStore down throughout the entire application as a cascading parameter.
+    </p>
+    <p>
+        In our App.razor file:
+    </p>
+    <pre>
+    <code>
+            &lt;Router AppAssembly="@@typeof(Program).Assembly" PreferExactMatches="@@true"&gt;
+                &lt;Found Context="routeData"&gt;
+                    &lt;CascadingValue Value="Store"&gt;
+                        &lt;RouteView RouteData="@@routeData" DefaultLayout="@@typeof(MainLayout)" /&gt;
+                    &lt;/CascadingValue&gt;
+                &lt;/Found&gt;
+                &lt;NotFound&gt;
+                    &lt;LayoutView Layout="@@typeof(MainLayout)"&gt;
+                        &lt;p&gt;Sorry, there's nothing at this address.&lt;/p&gt;
+                    &lt;/LayoutView&gt;
+                &lt;/NotFound&gt;
+            &lt;/Router&gt;
+
+            @@code
+            {
+                public StateStore Store { get; set; } = new StateStore();
+            }
+        </code>
+    </pre>
+    <p>
+        We added a "CascadingValue" that wraps our MainLayout component. In the code section, we initialized our object. Any component may now publish or subscribe to events.
+    </p>
+    <p>
+        The default counter component contains a button that (when clicked) keeps track of the click counts internally. We will modify the component to publish events to our StateStore instead. We will then create a new component that listens and reacts accordingly.
+    </p>
+    <pre>
+    <code>
+            @@page "/counter"
+            @@using StateManagement.State
+            @@using StateManagement.State.Events
+
+            &lt;h1&gt;Counter&lt;/h1&gt;
+
+            &lt;button class="btn btn-primary" @@onclick="() =&gt; Store.Publish(new IncreaseCounter())"&gt;Increase Counter&lt;/button&gt;
+            &lt;button class="btn btn-primary" @@onclick="() =&gt; Store.Publish(new DecreaseCounter())"&gt;Decrease Counter&lt;/button&gt;
+
+            @@code {
+                [CascadingParameter]
+                public StateStore Store { get; set; }
+            }
+        </code>
+    </pre>
+    <p>Our component now accepts the StateStore as a cascading parameter which we will use to publish counter events. We have two buttons that will publish an event to either increase or decrease the counter.</p>
+
+    <p>We now need a component to react to the events that are being published:</p>
+    <pre>
+    <code>
+            @@using StateManagement.State
+            @@using StateManagement.State.Events
+            @@implements IDisposable
+
+            &lt;p&gt;Current count: @@CurrentCount&lt;/p&gt;
+
+            @@code {
+                [CascadingParameter]
+                public StateStore Store { get; set; }
+
+                public int CurrentCount { get; set; }
+
+                protected override void OnInitialized()
+                {
+                    Store.IncreaseCounterHandler += IncreaseCount;
+                    Store.DecreaseCounterHandler += DecreaseCount;
+                    base.OnInitialized();
+                }
+
+                private void IncreaseCount(object? sender, IncreaseCounter e)
+                {
+                    ++CurrentCount;
+                    StateHasChanged();
+                }
+
+                private void DecreaseCount(object? sender, DecreaseCounter e)
+                {
+                    --CurrentCount;
+                    StateHasChanged();
+                }
+
+                public void Dispose()
+                {
+                    Store.IncreaseCounterHandler -= IncreaseCount;
+                    Store.DecreaseCounterHandler -= DecreaseCount;
+                }
+            }
+        </code>
+    </pre>
+    <p>
+        There is a lot happening in this component, summarized by the following:
+    </p>
+    <ul>
+        <li>Our counter subscriber component accepts the StateStore as a cascading parameter just like the counter component</li>
+        <li>We declare a variable for the "CurrentCount" that will be displayed in the UI</li>
+        <li>We override the "OnInitialized" method to subscribe to the events</li>
+        <li>We implement a method for each event that updates the "CurrentCount" property and calls the "StateHasChanged" method to notify the component to re-render</li>
+        <li>We implement the "IDisposable" interface to un-subscribe from the events</li>
+    </ul>
+    <p>
+        I updated the "index.razor" component to display both components for simplicity.
+    </p>
+    <pre>
+    <code>
+            @@page "/"
+
+            &lt;h1&gt;Hello, world!&lt;/h1&gt;
+
+            Welcome to your new app.
+
+            &lt;Counter /&gt;
+            &lt;CounterSubscriber /&gt;
+        </code>
+    </pre>
+    <p>
+        When we click the buttons in our Counter component, the CounterSubscriber should respond:
+    </p>
+<image src="https://media.giphy.com/media/ryVEBNJJP4wEplqRVZ/giphy.gif" alt="Counter subscriber reacting to events" caption="The Counter Subscriber component reacting"></image>
+<p>
+    This part one was concerned with getting our StateStore up and running. One of the drawbacks with the current implementation is that we must subscribe to each event, leading to tedious boiler plate code. In <a asp-controller="Blog" asp-action="BlazorInMemoryStateManagementPartTwoOfThree" target="_blank">part two</a>, we will refactor our StateStore to contain the state in a central location to reduce the code in our subscribers.
+</p>
+</blog-post>

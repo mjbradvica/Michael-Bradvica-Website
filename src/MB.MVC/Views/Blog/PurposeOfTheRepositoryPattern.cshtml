@@ -1,14 +1,12 @@
-﻿<h4 class="title is-4 block">The Purpose of the Repository Pattern</h4>
-<section class="section">
-    <article class="content">
-        <p>
-            The Repository Pattern is more than three decades old, while its purpose has shifted over the years, it still provides a simple solution to constrain your data access code.
-        </p>
-        <p>
-            The Repository Pattern is an interface:
-        </p>
-        <pre>
-        <code>
+﻿<blog-post title="The Purpose of the Repository Pattern">
+    <p>
+        The Repository Pattern is more than three decades old, while its purpose has shifted over the years, it still provides a simple solution to constrain your data access code.
+    </p>
+    <p>
+        The Repository Pattern is an interface:
+    </p>
+    <pre>
+    <code>
             public interface IWidgetRepository
             {
                 Task AddWidget(Widget widget);
@@ -19,31 +17,31 @@
             }
             </code>    
         </pre>
-        <p>
-            Implement the interface, inject where needed, and go.
-        </p>
-        <p>
-            Notice, I said interface because this pattern does not imply any of the following: Dapper, ORM, EntityFramework, Unit of Work, SQL, DbSet, or LINQ.
-        </p>
-        <p>
-            It's merely a <a href="https://en.wikipedia.org/wiki/Facade_pattern" target="_blank">Fascade</a> enforcing <a href="https://en.wikipedia.org/wiki/Interface_segregation_principle" target="_blank">Interface Segregation</a>.
-        </p>
-        <p>
-            Microservices, Service Layer, CQRS, DDD. None of these matter.
-        </p>
-        <h5 class="title is-5 block">It Constrains Options</h5>
-        <p>
-            What is a better engineered solution: three options or unlimited options? I would argue that fewer options are always better.
-        </p>
-        <p>
-            More options equals more bugs and a higher rate of entropy.
-        </p>
-        <h5 class="title is-5 block">It Makes Testing Easier</h5>
-        <p>
-            Check out this application service level code:
-        </p>
-        <pre>
-        <code>
+    <p>
+        Implement the interface, inject where needed, and go.
+    </p>
+    <p>
+        Notice, I said interface because this pattern does not imply any of the following: Dapper, ORM, EntityFramework, Unit of Work, SQL, DbSet, or LINQ.
+    </p>
+    <p>
+        It's merely a <a href="https://en.wikipedia.org/wiki/Facade_pattern" target="_blank">Fascade</a> enforcing <a href="https://en.wikipedia.org/wiki/Interface_segregation_principle" target="_blank">Interface Segregation</a>.
+    </p>
+    <p>
+        Microservices, Service Layer, CQRS, DDD. None of these matter.
+    </p>
+    <h5 class="title is-5 block">It Constrains Options</h5>
+    <p>
+        What is a better engineered solution: three options or unlimited options? I would argue that fewer options are always better.
+    </p>
+    <p>
+        More options equals more bugs and a higher rate of entropy.
+    </p>
+    <h5 class="title is-5 block">It Makes Testing Easier</h5>
+    <p>
+        Check out this application service level code:
+    </p>
+    <pre>
+    <code>
             public async Task &lt;Widget&gt; FindWidget(Guid id)
             {
                 Widget widget;
@@ -59,14 +57,13 @@
             }
             </code>
         </pre>
-        <p>
-            How do you unit test this code? Repository. 1) Mock the method. 2) Assert the result.
-        </p>
-        <p>
-            Raw disk, file, or database access. Good luck. Each of those options requires multiple paragraphs in its own right.
-        </p>
-        <p>
-            Good software reduces options. The Repository Pattern is no different in that it only provides what has been deemed necessary--interface segregation in the purest form.
-        </p>
-    </article>
-</section>
+    <p>
+        How do you unit test this code? Repository. 1) Mock the method. 2) Assert the result.
+    </p>
+    <p>
+        Raw disk, file, or database access. Good luck. Each of those options requires multiple paragraphs in its own right.
+    </p>
+    <p>
+        Good software reduces options. The Repository Pattern is no different in that it only provides what has been deemed necessary--interface segregation in the purest form.
+    </p>
+</blog-post>

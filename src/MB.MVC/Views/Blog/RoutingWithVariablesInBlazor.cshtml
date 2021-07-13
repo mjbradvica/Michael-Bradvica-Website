@@ -1,0 +1,59 @@
+﻿<blog-post title="Routing with Variables in Blazor">
+    <p>
+        Routing to components in Blazor is easy when leveraging variables. This can be a cleaner alternative to using raw strings throughout.
+    </p>
+    <p>
+        The example below uses the default Counter component included whenever a new Blazor project is created. The only requirement is a class that contains constant strings to use for our routes:
+    </p>
+    <pre>
+        <code>
+            public static class PageRoutes
+            {
+                public const string Counter = "counter";
+
+                public const string CounterRoute = "/counter";
+            }
+        </code>
+    </pre>
+    <p>
+        Note: Constant interpolated strings are in a preview stage to cut down on redundancies.
+    </p>
+    <p>
+        You can use routes with parameters as well:
+    </p>
+    <pre>
+        <code>
+            public static class PageRoutes
+            {
+                public const string MyParams = "/myparams/{id:int}";
+            }
+        </code>
+    </pre>
+    <p>
+        You can now update your NavLinks to the following:
+    </p>
+    <pre>
+        <code>
+            &lt;NavLink href="@@PageRoutes.Counter"&gt;
+        </code>
+    </pre>
+    <p>
+        Your components will use the "@@attribute" directive instead of "@@page" now.
+    </p>
+    <pre>
+        <code>
+            @@page "/counter"
+        </code>
+    </pre>
+    <p>
+        becomes...
+    </p>
+    <pre>
+        <code>
+            @@attribute [Route(PageRoutes.CounterRoute)]
+        </code>
+    </pre>
+    <p>
+        Using variables for routing in Blazor is a small change that increases reusability and removes naked strings.
+    </p>
+</blog-post>

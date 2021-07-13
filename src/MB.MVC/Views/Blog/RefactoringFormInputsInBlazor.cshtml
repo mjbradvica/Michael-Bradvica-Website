@@ -1,0 +1,215 @@
+﻿<blog-post title="Refactoring Form Inputs in Blazor">
+<p>
+    A common scenario in forms with web applications is dealing with tedious repetition when creating input fields. Many individual inputs have a common pattern of surrounding it with a label, validation, and some styling. Developers continuously find themselves in copy-paste scenarios with only a few small alterations for each input. The line count can easily explode into hundreds of lines with larger forms. Most of this markup falls under the category of line noise or boiler plate that must be there.
+</p>
+<p>
+    Every form field generally follows the same pattern:
+</p>
+<ul>
+    <li>Input Field</li>
+    <li>Validation text when the input is invalid</li>
+    <li>Label for the input</li>
+    <li>Styling for the input in form of css classes</li>
+</ul>
+<p>
+    The following example shows two input fields in a Blazor form. The first is a text input for a name, while the other is a number input for a person's age. For the sake of simplicity, only the input fields are displayed. The css classes come from the Bulma library.
+</p>
+<pre>
+        <code>
+            &lt;div class="field"&gt;
+                &lt;label for="name-text-input" class="label"&gt;Name&lt;/label&gt;
+                &lt;div class="control"&gt;
+                    &lt;InputText class="input" id="name-text-input" @@bind-Value="InputModel.Name"&gt;&lt;/InputText&gt;
+                &lt;/div&gt;
+                &lt;p class="help is-danger"&gt;
+                    &lt;ValidationMessage For="() =&gt; InputModel.Name"&gt;&lt;/ValidationMessage&gt;
+                &lt;/p&gt;
+            &lt;/div&gt;
+
+            &lt;div class="field"&gt;
+                &lt;label for="age-number-input" class="label"&gt;Age&lt;/label&gt;
+                &lt;div class="control"&gt;
+                    &lt;InputNumber class="input" id="age-number-input" @@bind-Value="InputModel.Age"&gt;&lt;/InputNumber&gt;
+                &lt;/div&gt;
+                &lt;p class="help is-danger"&gt;
+                    &lt;ValidationMessage For="() =&gt; InputModel.Age"&gt;&lt;/ValidationMessage&gt;
+                &lt;/p&gt;
+            &lt;/div&gt;
+        </code>
+    </pre>
+<p>
+    Although nothing is technically wrong with this markup, it is rather repetitive. As engineers, we should acknowledge the time-sinking and sanity-draining exercise of repeating, etc., etc.. Forms can grow with ever-more fields, drastically increasing the line count in a component. As developers, the infrastructure around the input is secondary. We should only have to declare a single element with all the secondary elements being added automatically.
+</p>
+<p>
+    If we sift through the html and razor markup, we can see the real differences:
+</p>
+<ul>
+    <li>Type of input</li>
+    <li>Model being passed to the input and validation</li>
+    <li>Label name and content</li>
+</ul>
+<p>
+    From this, we can create a common interface that will accept these parameters and render the same result. Our desired solution should look like so:
+</p>
+<pre>
+        <code>
+            &lt;TextInput @@bind-Value="InputModel.Name" Label="Name" Validation="() =&gt; InputModel.Name" /&gt;
+
+            &lt;NumberInput @@bind-Value="InputModel.Age" Label="Age" Validation="() =&gt; InputModel.Age" /&gt;
+        </code>
+    </pre>
+<p>
+    This ideal implementation is a single line solution that will that contain all the markup and razor necessary to render a complete input field. We will cut the numbers of lines required for each input from around nine to one. This will simplify our application and line count, ultimately saving time.
+</p>
+<p>
+    Reviewing the current implementation for the name field:
+</p>
+<pre>
+        <code>
+            &lt;div class="field"&gt;
+                &lt;label for="name-text-input" class="label"&gt;Name&lt;/label&gt;
+                &lt;div class="control"&gt;
+                    &lt;InputText class="input" id="name-text-input" @@bind-Value="InputModel.Name"&gt;&lt;/InputText&gt;
+                &lt;/div&gt;
+                &lt;p class="help is-danger"&gt;
+                    &lt;ValidationMessage For="() =&gt; InputModel.Name"&gt;&lt;/ValidationMessage&gt;
+                &lt;/p&gt;
+            &lt;/div&gt;
+        </code>
+    </pre>
+<p>
+    What we need is two components for each field:
+</p>
+<ul>
+    <li>An input component that is specific to the input type (text, number, email)</li>
+    <li>A container around the component that has the styling, label, and validation</li>
+</ul>
+<p>
+    We begin with our container component. If we extract everything around the component and leave a RenderFragment for our input, we should get the following:
+</p>
+<pre>
+        <code>
+            @@using System.Linq.Expressions
+            @@typeparam TValue
+
+            &lt;div class="field"&gt;
+                &lt;label for="@@DisplayName" class="label"&gt;@@DisplayName&lt;/label&gt;
+                &lt;div class="control"&gt;
+                    @@ChildContent
+                &lt;/div&gt;
+                &lt;p class="help is-danger"&gt;
+                    &lt;ValidationMessage For="@@ValidationFor"&gt;&lt;/ValidationMessage&gt;
+                &lt;/p&gt;
+            &lt;/div&gt;
+
+            @@code {
+                [Parameter]
+                public RenderFragment ChildContent { get; set; }
+
+                [Parameter]
+                public string DisplayName { get; set; }
+
+                [Parameter]
+                public Expression&lt;Func&lt;TValue&gt;&gt; ValidationFor { get; set; }
+            }
+        </code>
+    </pre>
+<p>
+    This is called our "InputContainer" component. All we have done here is replaced the specific input with a RenderFragment, allowing us to reuse the container for every specific input. Therefore, we have a parameter for our label and the validation expression, both of which will be used to validate the contents of the input.
+</p>
+<p>
+    With our InputContainer in place, we need to tackle our individual input components by creating one component per input type. While this may seem like a hassle at first, it will pay dividends later. Creating each input component is trickier than our container. Each input needs to inherits the generic "InputBase" class and implement the "TryParseValueFromString" method. This method is responsible for taking the value from the input and parsing it to the specific type for the model we are trying to populate.
+</p>
+<p>
+    Our TextInput component:
+</p>
+<pre>
+        <code>
+            @@using System.Linq.Expressions
+            @@inherits InputBase&lt;string&gt;
+
+            &lt;InputContainer ValidationFor="Validation" DisplayName="@@Label"&gt;
+                &lt;input class="input @@CssClass" id="@@Label" type="text" @@bind="@@CurrentValue" /&gt;
+            &lt;/InputContainer&gt;
+
+
+            @@code {
+
+                [Parameter]
+                public string Label { get; set; }
+
+                [Parameter]
+                public Expression&lt;Func&lt;string&gt;&gt; Validation { get; set; }
+
+
+                protected override bool TryParseValueFromString(string value, out string result, out string validationErrorMessage)
+                {
+                    result = value;
+                    validationErrorMessage = null;
+                    return true;
+                }
+
+            }
+        </code>
+    </pre>
+<p>
+    A quick review of what this component is accomplishing:
+</p>
+<ol>
+    <li>Inherits from InputBase of type string because this is a text input</li>
+    <li>Declares an input of type text and passes the label as an id</li>
+    <li>Adds the "CssClass" property, which is part of InputBase class, allowing Blazor to add the "valid" and "invalid" classes during validation</li>
+    <li>Adds two-way binding to the "CurrentValue" property inherited from the InputBase class</li>
+    <li>Passes the input to the "InputContainer" as a child, the label name, and validation expression</li>
+    <li>Implements the TryParseValueFromString method</li>
+</ol>
+<p>
+    For reference, our NumberInput becomes:
+</p>
+<pre>
+        <code>
+            @@using System.Linq.Expressions
+            @@inherits InputBase&lt;int&gt;
+
+            &lt;InputContainer DisplayName="@@Label" ValidationFor="@@Validation"&gt;
+                &lt;input class="input" id="@@Label" type="number" @@bind="@@CurrentValue" /&gt;
+            &lt;/InputContainer&gt;
+
+            @@code {
+                [Parameter]
+                public string Label { get; set; }
+
+                [Parameter]
+                public Expression&lt;Func&lt;int&gt;&gt; Validation { get; set; }
+
+                protected override bool TryParseValueFromString(string value, out int result, out string validationErrorMessage)
+                {
+                    if (int.TryParse(value, out var parsed))
+                    {
+                        result = parsed;
+                        validationErrorMessage = null;
+                        return true;
+                    }
+
+                    throw new InvalidOperationException("Can't parse to int.");
+                }
+            }
+        </code>
+    </pre>
+<p>
+    The main difference is our TryParseValueFromString is forced to do extra logic when dealing with non-numeric strings.
+</p>
+<p>
+    But with our new compact components, our form content becomes:
+</p>
+<pre>
+    <code>
+        &lt;TextInput @@bind -Value="InputModel.Name" Label="Name" Validation="() =&gt; InputModel.Name" /&gt;
+
+        &lt;NumberInput @@bind -Value="InputModel.Age" Label="Age" Validation="() =&gt; InputModel.Age" /&gt;
+    </code>
+</pre>
+<p>
+    The amount of markup you will be able to remove in your application ultimately comes down to how many forms you have and the size of those forms. For applications with minimal form usage, this technique may not make a huge impact. Yet, for applications with many forms the opportunity to reduce inputs by up to ninety percent cannot be overstated or ignored.
+</p>
+</blog-post>

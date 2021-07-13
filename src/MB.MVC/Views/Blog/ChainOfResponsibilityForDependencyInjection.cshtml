@@ -1,13 +1,11 @@
-﻿<h4 class="title is-4 block">Chain of Responsibility Adopted for Dependency Injection</h4>
-<section class="section">
-    <article class="content">
+﻿<blog-post title="Chain of Responsibility Adopted for Dependency Injection">
         <p>
-            The <a href="https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern" target="_blank">Chain of Responsibility</a> is an original "Gang of Four" pattern that solves chained function calls. Its main purpose is to allow for an operation to occur without individual steps having any knowledge of any other step involved.
-        </p>
-        <p>
-            Unfortunately, many examples fail to show how to properly integrate the pattern into your application. You end up with bloated classes that look something like this.
-        </p>
-        <pre>
+                The <a href="https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern" target="_blank">Chain of Responsibility</a> is an original "Gang of Four" pattern that solves chained function calls. Its main purpose is to allow for an operation to occur without individual steps having any knowledge of any other step involved.
+            </p>
+            <p>
+                Unfortunately, many examples fail to show how to properly integrate the pattern into your application. You end up with bloated classes that look something like this.
+            </p>
+            <pre>
             <code>
             public class BadChainCreationHandler : IRequestHandler&lt;Widget&gt;
             {
@@ -33,25 +31,25 @@
             }
             </code>
         </pre>
-        <p>
-            We have an application service handler that does something with a fictitious widget object. The handler is responsible for both the creation of the chain and its execution. In the spirit of SRP, the handler should not be aware of how the chain is created.
-        </p>
-        <p>
-            Our solution is quite simple: a factory!
-        </p>
-        <pre>
-        <code>
+            <p>
+                We have an application service handler that does something with a fictitious widget object. The handler is responsible for both the creation of the chain and its execution. In the spirit of SRP, the handler should not be aware of how the chain is created.
+            </p>
+            <p>
+                Our solution is quite simple: a factory!
+            </p>
+            <pre>
+            <code>
             public interface IChainFactory&lt;T&gt;
             {
                 IChainHandler&lt;T&gt; CreateChain();
             }
         </code>
     </pre>
-        <p>
-            Our handler can now become...
-        </p>
-        <pre>
-        <code>
+            <p>
+                Our handler can now become...
+            </p>
+            <pre>
+            <code>
             public class GoodChainCreationHandler : IRequestHandler&lt;Widget&gt;
             {
                 private readonly IChainFactory&lt;Widget&gt; _chainFactory;
@@ -70,11 +68,11 @@
             }
         </code>
     </pre>
-        <p>
-            Our factory is now responsible for the creation of our chain (and nothing else!).
-        </p>
-        <pre>
-        <code>
+            <p>
+                Our factory is now responsible for the creation of our chain (and nothing else!).
+            </p>
+            <pre>
+            <code>
             public class WidgetChainFactory : IChainFactory&lt;Widget&gt;
             {
                 private readonly IFirstDependency _firstDependency;
@@ -99,8 +97,7 @@
             }
         </code>
     </pre>
-        <p>
-            The handler is responsible only for starting the chain. Testing becomes easier since you have reduced the number of dependencies in your handler. And, lastly, we have enforced consistency in the application by keeping the creation of objects inside our factories.
-        </p>
-    </article>
-</section>
+            <p>
+                The handler is responsible only for starting the chain. Testing becomes easier since you have reduced the number of dependencies in your handler. And, lastly, we have enforced consistency in the application by keeping the creation of objects inside our factories.
+            </p>
+</blog-post>

@@ -1,0 +1,191 @@
+﻿<blog-post title="Using Sass in ASP.NET Core, including Blazor">
+    <p>
+        <a href="https://sass-lang.com/" target="_blank">Sass</a> is a css-preprocessor that allows us to create stylesheets for web applications using mixins, variables, functions, and nested rules. These SASS files are then compiled into standard css files for our use. What is nice, ASP.NET Core and Blazor can integrate Sass into the build process. This allows us to write our stylesheets in sass first or even import and modify existing frameworks. Today, we are going to use sass to import the Bulma library and change the primary color with just a few lines of code.
+    </p>
+    <p>
+        A few things are necessary:
+    </p>
+    <ol>
+        <li>An updated version of dotnet Core</li>
+        <li>An updated version of Node.js</li>
+        <li>In Visual Studio, start a new ASP.NET Core Web or Blazor project</li>
+    </ol>
+    <p>
+        The first thing we need to do is make sure our tooling is correct for how Visual Studio will use Grunt.
+    </p>
+    <p>
+        Go to Options -> Tools -> Projects and Solutions -> Web Package Management. Make sure it looks like this:
+    </p>
+    <image src="images/sassinaspnetcore/ide-tooling.png" alt="IDE Tooling" caption="Visual Studio Path Tooling"></image>
+    <p>
+        Once that is ready, we need to add a package.json to our solution because we will be using a few npm packages to handle our sass to css compilation.
+    </p>
+    <p>
+        In the Solution Explorer at the solution level, right-click -> Add -> New Item -> npm Configuration File
+    </p>
+    <image src="images/sassinaspnetcore/package-json.png" alt="Node Json" caption="Adding a package.json file"></image>
+    <p>
+        Once the file is added, open the command prompt or Git Bash then navigate to the solution level where the package.json file is located. (One of the easiest methods of navigation is in File Explorer, right-click -> Git Bash Here)
+    </p>
+    <p>
+        We want to add the following packages as a dev dependency and Bulma as a normal dependency.
+    </p>
+    <ul>
+        <li>Grunt</li>
+        <li>Grunt CLI</li>
+        <li>Grunt Sass</li>
+        <li>Node Sass</li>
+    </ul>
+    <p>
+        You can use the following commands:
+    </p>
+    <p>
+        npm install bulma
+        npm install grunt grunt-cli grunt-sass node-sass --save-dev
+    </p>
+    <p>
+        Our package.json file should now look like this:
+    </p>
+    <pre>
+        <code>
+            {
+                "version": "1.0.0",
+                "name": "asp.net",
+                "private": true,
+                "devDependencies": {
+                    "grunt": "^1.4.1",
+                    "grunt-cli": "^1.4.3",
+                    "grunt-sass": "^3.1.0",
+                    "node-sass": "^6.0.1"
+                },
+                "dependencies": {
+                    "bulma": "^0.9.3"
+                }
+            }
+        </code>
+    </pre>
+    <p>
+        Note: Your version numbers will probably be different as this post was done in the summer of 2021.
+    </p>
+    <p>
+        Just as we added our package.json at the solution level, right-click -> Add New Item -> Choose a javascript file, and name it "gruntfile.js"
+    </p>
+    <image src="images/sassinaspnetcore/add-gruntfile.png" alt="Gruntfile.js" caption="Adding a gruntfile.js"></image>
+    <p>
+        Add the following contents to your new gruntfile:
+    </p>
+    <pre>
+        <code>
+                /// &lt;binding AfterBuild='default' /&gt;
+
+                module.exports = function (grunt) {
+
+                var sass = require('node-sass');
+
+                grunt.initConfig({
+
+                    sass: {
+                        options: {
+                            implementation: sass,
+                            sourceMap: true,
+                            outputStyle: 'compressed'
+                        },
+                        dist: {
+                            files: [
+                                {
+                                    expand: true,
+                                    cwd: "Styles",
+                                    src: ["**/*.scss"],
+                                    dest: "wwwroot/css",
+                                    ext: ".css"
+                                }
+                            ]
+                        }
+                    }
+                });
+
+                grunt.loadNpmTasks('grunt-sass');
+
+                grunt.registerTask('default', ['sass']);
+            };
+        </code>
+    </pre>
+    <p>
+        This tells the pre-processor where to look for our sass files and also where to compile them. Currently, we are saying our sass files will be in a folder called "Styles" that will exist at the same level as our package.json file--at the solution level. We will output the compiled css to the css folder located in the wwwroot. The binding at top says that our pre-process will run after every build.
+    </p>
+    <p>
+        Note: Your sass files cannot be in the wwwroot folder, which is reserved for serving only static files.
+    </p>
+    <p>
+        Add your "Styles" folder, or whatever you wish to call it, then create an sass file inside of it.
+        Here is what it looks like at the solution level:
+    </p>
+    <image src="images/sassinaspnetcore/solution.png" alt="Visual Studio Solution" caption="Solution with proper file structure"></image>
+    <p>
+        I am going to change the primary color in Bulma from its default of turquoise to something different. This post is not concerned with teaching Bulma. Changing a color is simply a common use case.
+    </p>
+    <pre>
+        <code>
+            @@charset "utf-8";
+
+            // Define a variable.
+            $orchird: #AF69EF;
+
+            // Update bulma's primary color
+            $primary: $orchird;
+
+            // Import the rest of bulma
+            @@import "../node_modules/bulma/bulma";
+        </code>
+    </pre>
+    <p>All we have done is updated the primary color and imported the rest of the library.</p>
+
+    <p>Now, we just build our solution, and our color.css file should be generated.</p>
+
+    <p>Note: I unloaded and reloaded the solution to get Visual Studio to fully recognize the gruntfile.</p>
+
+    <p>Our color.css file being generated:</p>
+    <image src="images/sassinaspnetcore/generated-file.png" alt="Css files generated" caption="Color.css file generated from build"></image>
+    <p>The last step is to import our new css file into our application and test it out:</p>
+    <p>Our index.html with our css import:</p>
+    <pre>
+        <code>
+            &lt;!DOCTYPE html&gt;
+            &lt;html&gt;
+
+            &lt;head&gt;
+                &lt;meta charset="utf-8" /&gt;
+                &lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /&gt;
+                &lt;title&gt;SassBlazor&lt;/title&gt;
+                &lt;base href="/" /&gt;
+                &lt;link href="css/color.css" rel="stylesheet" /&gt;
+            &lt;/head&gt;
+
+            &lt;body&gt;
+                &lt;div id="app"&gt;Loading...&lt;/div&gt;
+                &lt;script src="_framework/blazor.webassembly.js"&gt;&lt;/script&gt;
+            &lt;/body&gt;
+
+            &lt;/html&gt;
+        </code>
+    </pre>
+    <p>
+        And our Index page to look at our update:
+    </p>
+    <pre>
+        <code>
+            @@page "/"
+
+            &lt;h1&gt;Hello, world!&lt;/h1&gt;
+
+            &lt;p class="has-text-primary"&gt;Welcome to your new app.&lt;/p&gt;
+        </code>
+    </pre>
+    <p>
+        Our final result with a new primary color:
+    </p>
+    <image src="images/sassinaspnetcore/result.png" alt="Colored text" caption="Text primary color has been changed"></image>
+    <p>
+        Special thanks to Mr. Colin Bacon for providing the inspiration and skeleton for this article. His blog post was published in 2017 but has since been outdated from new versions of the npm packages. This article was an exercise in getting sass operational in the newest versions of dotnet core, node, and trying to solve a common use case. You can read his blog <a href="https://www.iambacon.co.uk/blog/how-to-use-sass-in-asp-net-core-2-0-mvc" target="_blank" class="has-text-grey">here</a>.
+    </p>
+</blog-post>
