@@ -48,5 +48,8 @@
 
         [Route("blazor-in-memory-state-management-3-3")]
         public IActionResult BlazorInMemoryStateManagementPartThreeOfThree() => View();
+
+        [Route("blazor-advantages-via-a-progressive-web-app")]
+        public IActionResult BlazorAdvantagesViaAProgressiveWebApp() => View();
     }
 }
