@@ -1,0 +1,148 @@
+﻿<blog-post title="NPredicateBuilder, an Alternative to Repetitive Queries">
+	<p>
+		<a href="https://www.nuget.org/packages/NPredicateBuilder.EF/" target="_blank">NPredicateBuilder</a> <a href="https://github.com/mjbradvica/n-predicate-builder" target="_blank">(repo here)</a> is a means to condense redundant "Where" and "Order" LINQ clauses in your application. Even better, you can test each predicate independently. By this, you can be certain that any large query you create--which is unable to be tested by itself--works properly.
+	</p>
+	<p>
+		NPredicateBuilder allows you to turn...
+	</p>
+	<pre>
+		<code>
+	var results = people
+		.Where(x => x.Name != "Joe")
+		.Where(x => x.Age >= 10)
+		.Where(x => x.IsEligible)
+		.OrderBy(x => x.Name)
+		.ThenBy(x => x.Age)
+		.ToList();
+		</code>
+	</pre>
+	<p>
+		into...
+	</p>
+	<pre>
+		<code>
+	var predicateBuilder = people
+		.NPredicateBuilderWhere(query)
+		.NPredicateBuilderOrder(order)
+		.ToList();
+		</code>
+	</pre>
+	<p>
+		"Query" and "order" are objects that you build of individual predicates.
+	</p>
+	<pre>
+		<code>
+	var query = new PersonQueries()
+		.IsNotNamedJoe()
+		.IsOlderThan(10)
+		.IsEligible();
+
+
+	var order = new PersonOrders()
+		.ByName()
+		.ThenByAge();
+		</code>
+		</pre>
+	<p>
+		The main difference is that you can re-use your predicates with any desired query. So, instead of redundant clauses that may appear in dozens of queries such as--
+	</p>
+	<pre>
+		<code>
+	.Where(x => x.Age >= 10);
+		</code>
+	</pre>
+	<p>
+		--you now have re-usable, testable methods.
+	</p>
+	<pre>
+		<code>
+	public PersonQueries IsOlderThan(int age)
+	{
+		AddAndCriteria(x => x.Age >= age);
+
+		return this;
+	}
+		</code>
+	</pre>
+	<h5 class="title is-5">Advantages of NPredicateBuilder</h5>
+	<h6 class="title is-6">Queries and Orders are Declarative</h6>
+	<p>
+		Your queries are far more descriptive and easier to read with NPredicateBuilder. Being forced to name a method "NameIsNotJoeAndIsOlderThanTenAndIsEligigleOrderedByNameThenAge" is pure insanity. NPredicateBuilder is declarative by nature. Your queries and orders describe themselves in a clear and concise fashion.
+	</p>
+	<h6 class="title is-6">Everything is Now Testable</h6>
+	<p>
+		It is near impossible to test EF queries because the DbContext object is almost impossible to mock. The only way around this is to extract every predicate in your application so you can test it individually. NPredicateBuilder performs this behavior by default. Because every single Where and Order clause is separate, testing is easy.
+	</p>
+	<p>
+		The following demonstrates how to test an Order:
+	</p>
+	<pre>
+		<code>
+	[TestMethod]
+	public void ByName_OrdersCorrectly()
+	{
+	    var bob = new Person { Name = "Bob" };
+	    var billy = new Person { Name = "Billy" };
+
+	    var people = new List&lt;Person&gt;
+	    {
+	        bob, billy
+	    };
+
+	    _order = new PersonOrders().ByName();
+
+	    var result = people
+	        .AsQueryable()
+	        .NPredicateBuilderOrder(_order).ToList();
+
+	    Assert.AreEqual(billy, result.First());
+	}
+		</code>
+	</pre>
+	<h6 class="title is-6">Removes Redundant Data Access Code</h6>
+	<p>You may have seen interfaces littered with methods like this...</p>
+	<pre>
+		<code>
+	public interface IPersonRepository
+	{
+	    List&lt;People&gt; GetByName(string name);
+	    List&lt;People&gt; GetByNameAndAge(string name, int age);
+	    List&lt;People&gt; GetByStatusOrAddress(Status status, int zipcode);
+	    
+	    // There are probably many more methods in this interface all like the ones above.
+	}
+		</code>
+	</pre>
+	<p>With NPredicateBuilder, the above can become simply...</p>
+	<pre>
+		<code>
+	public interface IPersonRepository
+	{
+	    List&lt;People&gt; Search(BaseQuery&lt;Person&gt; query, BaseOrder&lt;Person&gt; order);
+	}
+		</code>
+	</pre>
+	<h6 class="title is-6">Actually Easy to Learn</h6>
+	<p>
+		NPredicateBuilder is easy to learn because it's tiny. It includes two base classes and a couple of extension methods. That's it.
+	</p>
+	<h6 class="title is-6">It Plays Nicely with Everything</h6>
+	<p>
+		Because NPredicateBuilder has two extension methods, you can plug it into any LINQ expression.
+	</p>
+	<pre>
+		<code>
+	var predicateBuilder = people
+	    .NPredicateBuilderWhere(query)
+	    .NPredicateBuilderOrder(order)
+	    .GroupBy(x => x.Name)
+	    .Skip(10)
+	    .Take(100)
+	    .ToList();
+		</code>
+	</pre>
+	<h5 class="title is-5">In Short</h5>
+	<p>
+		If your application mostly deals with CRUD and you have only a few joins, NPredicateBuilder may not be worth it. Where NPredicateBuilder really shines is with applications that have many queries and orders that are duplicated or partially duplicated multiple times. It allows any developer to reduce their code base into reusable, testable code nuggets that make life easier.
+	</p>
+</blog-post>
