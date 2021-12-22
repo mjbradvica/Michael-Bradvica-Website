@@ -8,6 +8,8 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("NPredicateBuilderAnAlternativeToRepetitiveQueries", "NPredicateBuilder, an Alternative to Repetitive Queries"),
+                BlogPost.AddPost("BlazorAdvantagesViaAProgressiveWebApp", "Blazor Advantages via a Progressive Web App"),
                 BlogPost.AddPost("BlazorInMemoryStateManagementPartThreeOfThree", "Blazor In-Memory State Management Part 3"),
                 BlogPost.AddPost("BlazorInMemoryStateManagementPartTwoOfThree", "Blazor In-Memory State Management Part 2"),
                 BlogPost.AddPost("BlazorInMemoryStateManagementPartOneOfThree", "Blazor In-Memory State Management Part 1"),
