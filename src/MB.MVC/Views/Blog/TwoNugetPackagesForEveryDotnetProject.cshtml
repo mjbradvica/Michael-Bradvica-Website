@@ -1,0 +1,54 @@
+﻿<blog-post title="Two NuGet Packages for Every dotnet Project">
+    <p>
+        If you are using dotnet, put your life on autopilot by adding the <a href="https://docs.microsoft.com/en-us/dotnet/framework/code-analyzers" target="_blank">dotnet analyzers</a> and <a href="https://github.com/DotNetAnalyzers/StyleCopAnalyzers" target="_blank">StyleCop analyzers</a> to your project.
+    </p>
+    <p>
+        The dotnet analyzers enforce the coding standards that Microsoft recommends.
+    </p>
+    <p>
+        StyleCop is a code analyzer of the StyleCop rules that enforce proper spacing, readability, and layout.
+    </p>
+    <p>
+        You can use a <a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2022" target="_blank">Directory.build.props</a> file that will add the packages to every separate project in your solution.
+    </p>
+    <p>
+        Create a file called "Directory.build.props" in the same directory as your solution file.
+    </p>
+    <pre>
+        <code>
+            &lt;Project&gt;
+                &lt;PropertyGroup&gt;
+                    &lt;EnableNETAnalyzers&gt;True&lt;/EnableNETAnalyzers&gt;
+                    &lt;EnforceCodeStyleInBuild&gt;True&lt;/EnforceCodeStyleInBuild&gt;
+                    &lt;AnalysisLevel&gt;latest&lt;/AnalysisLevel&gt;
+                &lt;/PropertyGroup&gt;
+                &lt;ItemGroup&gt;
+                    &lt;PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.376"&gt;
+                        &lt;PrivateAssets&gt;all&lt;/PrivateAssets&gt;
+                        &lt;IncludeAssets&gt;runtime; build; native; contentfiles; analyzers; buildtransitive&lt;/IncludeAssets&gt;
+                    &lt;/PackageReference&gt;
+                &lt;/ItemGroup&gt;
+            &lt;/Project&gt;
+        </code>
+    </pre>
+    <p>
+        This will add the analyzers and StyleCop to every project in the solution.
+    </p>
+    <p>
+        You can then override and customize any rule you want with an <a href="https://docs.microsoft.com/en-us/visualstudio/ide/create-portable-custom-editor-options?view=vs-2022" target="_blank">.editorconfig</a> file at the same directory level.
+    </p>
+    <p>
+        Visual Studio can generate this file for you in the solution.
+    </p>
+    <p>
+        In the Solution Explorer, right-click the solution file: "Add," "New EditorConfig".
+    </p>
+    <image src="images/twonugetpackagesforeverydotnetproject/editorconfig.png" alt="Adding an EditorConfig" caption="Adding an EditorConfig file"></image>
+    <p>
+        Visual Studio supports changing the file inside the IDE, itself.
+    </p>
+    <image src="images/twonugetpackagesforeverydotnetproject/vssupport.png" alt="Visual Support for EditorConfig" caption="Visual Studio support for an EditorConfig file"></image>
+    <p>
+        Adding these analyzers takes a mere five minutes, but the time you save is compounded throughout your project. Do your team a favor by enforcing coding and style rules with built-in analyzers. This eliminates disagreements altogether. If your <a asp-controller="Blog" asp-action="TwoNpmPackagesForEveryFrontendProject" target="_blank">frontend is js</a> based, two npm packages for every project.
+    </p>
+</blog-post>

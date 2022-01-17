@@ -1,10 +1,12 @@
 ﻿@model IEnumerable<MB.MVC.Models.BlogPost>
 
 <section>
+    <container>
     @foreach (var post in Model)
     {
         <p>
             <a asp-controller="Blog" asp-action="@post.Action" class="has-text-grey is-size-3">@post.Title</a>
         </p>
     }
+    </container>
 </section>

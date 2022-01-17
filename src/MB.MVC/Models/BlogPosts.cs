@@ -8,6 +8,9 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("TwoNugetPackagesForEveryDotnetProject", "Two NuGet Packages for Every dotnet Project"),
+                BlogPost.AddPost("TwoNpmPackagesForEveryFrontendProject", "Two npm Packages for Every Frontend Project"),
+                BlogPost.AddPost("EstablishCodingStandardsEarly", "Establish Coding Standards Early"),
                 BlogPost.AddPost("NPredicateBuilderAnAlternativeToRepetitiveQueries", "NPredicateBuilder, an Alternative to Repetitive Queries"),
                 BlogPost.AddPost("BlazorAdvantagesViaAProgressiveWebApp", "Blazor Advantages via a Progressive Web App"),
                 BlogPost.AddPost("BlazorInMemoryStateManagementPartThreeOfThree", "Blazor In-Memory State Management Part 3"),

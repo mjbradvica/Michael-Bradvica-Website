@@ -8,11 +8,13 @@
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            output.PreContent.SetHtmlContent($"<h4 class=\"title is-4 block\">{Title}</h4>" +
-                                             "<section class=\"section\">" +
+            output.PreContent.SetHtmlContent("<section class=\"section\">" +
+                                             "<div class=\"container\">" +
+                                             $"<h4 class=\"title is-4\">{Title}</h4>" +
                                              "<article class=\"content\">");
-            output.PostContent.SetHtmlContent("</article class=\"content\">" +
-                                              "</section class=\"section\">");
+            output.PostContent.SetHtmlContent("</article>" +
+                                              "</div>" +
+                                              "</section>");
 
             base.Process(context, output);
         }

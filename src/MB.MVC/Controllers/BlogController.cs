@@ -54,5 +54,14 @@
 
         [Route("npredicatebuilder-an-alternative-to-repetitive-queries")]
         public IActionResult NPredicateBuilderAnAlternativeToRepetitiveQueries() => View();
+
+        [Route("establish-coding-standards-early")]
+        public IActionResult EstablishCodingStandardsEarly() => View();
+
+        [Route("two-npm-packages-for-every-frontend-project")]
+        public IActionResult TwoNpmPackagesForEveryFrontendProject() => View();
+
+        [Route("two-nuget-packages-for-every-dotnet-project")]
+        public IActionResult TwoNugetPackagesForEveryDotnetProject() => View();
     }
 }
