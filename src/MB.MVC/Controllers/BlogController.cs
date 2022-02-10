@@ -63,5 +63,8 @@
 
         [Route("two-nuget-packages-for-every-dotnet-project")]
         public IActionResult TwoNugetPackagesForEveryDotnetProject() => View();
+
+        [Route("dependency-inversion-versus-inversion-of-control-versus-dependency-injection")]
+        public IActionResult DependencyInversionVersusInversionOfControlVersusDependencyInjection() => View();
     }
 }
