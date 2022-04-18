@@ -66,5 +66,8 @@
 
         [Route("dependency-inversion-versus-inversion-of-control-versus-dependency-injection")]
         public IActionResult DependencyInversionVersusInversionOfControlVersusDependencyInjection() => View();
+
+        [Route("application-services-are-conductors")]
+        public IActionResult ApplicationServicesAreConductors() => View();
     }
 }

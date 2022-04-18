@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("ApplicationServicesAreConductors", "Application Services are Conductors"),
                 BlogPost.AddPost("DependencyInversionVersusInversionOfControlVersusDependencyInjection", "Dependency Inversion vs. Inversion of Control vs. Dependency Injection"),
                 BlogPost.AddPost("TwoNugetPackagesForEveryDotnetProject", "Two NuGet Packages for Every dotnet Project"),
                 BlogPost.AddPost("TwoNpmPackagesForEveryFrontendProject", "Two npm Packages for Every Frontend Project"),
