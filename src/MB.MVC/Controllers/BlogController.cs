@@ -69,5 +69,8 @@
 
         [Route("application-services-are-conductors")]
         public IActionResult ApplicationServicesAreConductors() => View();
+
+        [Route("covariance-and-contravariance-quick-guide")]
+        public IActionResult CovarianceAndContravarianceQuickGuide() => View();
     }
 }

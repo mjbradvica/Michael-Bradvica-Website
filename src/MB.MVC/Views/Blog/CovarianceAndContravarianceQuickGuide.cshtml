@@ -1,0 +1,174 @@
+﻿<blog-post title="Covariance & Contravariance Quick Guide">
+    <p>
+        Covariance and Contravariance are concerned with the ability to assign base or derived types from generic interfaces. You can think of these keywords as enabling the <a href="https://en.wikipedia.org/wiki/Liskov_substitution_principle" target="_blank">Liskov Substitution Principle</a> for generic interfaces.
+    </p>
+    <p>
+        A common example is the IEnumerable interface. You can assign a base type from what is initialized.
+    </p>
+    <pre>
+        <code>
+            IEnumerable&lt;object&gt; vals = new List&lt;MyClass&gt;();
+        </code>
+    </pre>
+    <p>
+        Looking at the interface, you'll see the following:
+    </p>
+    <pre>
+        <code>
+            public interface IEnumerable&lt;out T&gt; : IEnumerable
+            {
+                IEnumerator&lt;T&gt; GetEnumerator();
+            }
+        </code>
+    </pre>
+    <p>
+        Covariance is denoted by the "out" keyword. Contravariance uses the "in" keyword.
+    </p>
+    <p>
+        A few rules to remember:
+    </p>
+    <ol>
+        <li>They only apply to generic interfaces</li>
+        <li>They only use uni-directional flow</li>
+    </ol>
+    <p>
+        The following interface is not possible:
+    </p>
+    <pre>
+        <code>
+            public interface IWontWork&lt;(out or in) T&gt;
+            {
+                T MyMethod(T parameter);
+            }
+        </code>
+    </pre>
+    <p>
+        Generic parameters defined by either covariance or contravariance must be either returned or used as parameters--but not both.
+    </p>
+    <h5 class="title is-5">
+        Covariance
+    </h5>
+    <p>
+        Covariance means applying the "out" keyword to a generic interface.
+    </p>
+    <pre>
+        <code>
+            public interface IMyInterface&lt;out T&gt;
+            {
+                T MyMethod();
+            }
+        </code>
+    </pre>
+    <p>
+        By adding this keyword we are defining a rule that states: any type returned by this method may be assigned to a base type.
+    </p>
+    <p>
+        Assuming we have class A, and class B that was derived from A, we could do the following:
+    </p>
+    <pre>
+        <code>
+            A baseType = IMyInterface&lt;B&gt;;
+        </code>
+    </pre>
+    <p>
+        Another way to conceptualize covariance is the Task object, which is NOT covariant.
+    </p>
+    <p>
+        The following will <strong>not</strong> work:
+    </p>
+    <pre>
+        <code>
+            public async Task&lt;IEnumerable&lt;int&gt;&gt; MyMethod()
+            {
+                List&lt;int&gt; values = await GetValues();
+
+                return values;
+            }
+        </code>
+    </pre>
+    <p>
+        This error will occur:
+    </p>
+    <p>
+        Error: CS0029 - Cannot implicitly convert type 'type' to 'type'
+    </p>
+    <p>
+        If we look at the Task object:
+    </p>
+    <pre>
+        <code>
+            public class Task&lt;TResult&gt; : Task
+            {
+                // Implementation details
+            }
+        </code>
+    </pre>
+    <p>
+        TResult is not defined with the "out" keyword.
+    </p>
+    <p>
+        To fix our method, we will need to cast our result to the exact IEnumerable type.
+    </p>
+    <pre>
+        <code>
+            public async Task&lt;IEnumerable&lt;int&gt;&gt; MyMethod()
+            {
+                List&lt;int&gt; values = await GetValues();
+
+                return values.AsEnumerable();
+            }
+        </code>
+    </pre>
+    <h5 class="title is-5">
+        Contravariance
+    </h5>
+    <p>
+        Contravariance is just the opposite of covariance. We can assign a base type to a derived variable.
+    </p>
+    <pre>
+        <code>
+            public interface IMyInterface&lt;in T&gt;
+            {
+                void MyMethod(T parameter);
+            }   
+        </code>
+    </pre>
+    <p>
+        If we have the following classes:
+    </p>
+    <pre>
+        <code>
+            public class MyBase
+            {
+            }
+        </code>
+    </pre>
+    <p>and...</p>
+    <pre>
+        <code>
+            public class MyDerived : MyBase
+            {
+            }
+        </code>
+    </pre>
+    <p>
+        Then we can do the following with these interfaces:
+    </p>
+    <pre>
+        <code>
+            IMyInterface&lt;MyDerived&gt; obj = new MyInterfaceImplementation&lt;MyBase&gt;();
+        </code>
+    </pre>
+    <p>
+        The situations for using contravariance and the "in" keyword are not as robust as covariance. This is because good software is built around abstractions rather than details.
+    </p>
+    <p>
+        Common examples of contravariance are the IComparable and IComparer interfaces, which compare both base and derived types when sorting lists.
+    </p>
+    <h5 class="title is-5">
+        Conclusion
+    </h5>
+    <p>
+        Covariance allows you to assign base types from returned derived types. Contravariance allows you to assign derived types to base type parameters. Covariance is more applicable than contravariance due to our preference for base types. If you are ever asked about these topics or the "in" and "out" keywords in an interview, simply respond with, "They allow you to apply the Liskov Substitution Principle to generic interfaces."
+    </p>
+</blog-post>
