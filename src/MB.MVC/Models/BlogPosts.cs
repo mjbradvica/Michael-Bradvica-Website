@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("SinglePathway", "Single Pathway"),
                 BlogPost.AddPost("CovarianceAndContravarianceQuickGuide", "Covariance and Contravariance Quick Guide"),
                 BlogPost.AddPost("ApplicationServicesAreConductors", "Application Services are Conductors"),
                 BlogPost.AddPost("DependencyInversionVersusInversionOfControlVersusDependencyInjection", "Dependency Inversion vs. Inversion of Control vs. Dependency Injection"),

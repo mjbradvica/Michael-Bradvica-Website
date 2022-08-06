@@ -72,5 +72,8 @@
 
         [Route("covariance-and-contravariance-quick-guide")]
         public IActionResult CovarianceAndContravarianceQuickGuide() => View();
+
+        [Route("single-pathway")]
+        public IActionResult SinglePathway() => View();
     }
 }
