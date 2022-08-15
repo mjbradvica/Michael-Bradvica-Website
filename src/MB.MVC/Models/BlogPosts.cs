@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("YourApplicationIsNotTheDatabase", "Your Application is NOT the Data(base)"),
                 BlogPost.AddPost("SinglePathway", "Single Pathway"),
                 BlogPost.AddPost("CovarianceAndContravarianceQuickGuide", "Covariance and Contravariance Quick Guide"),
                 BlogPost.AddPost("ApplicationServicesAreConductors", "Application Services are Conductors"),

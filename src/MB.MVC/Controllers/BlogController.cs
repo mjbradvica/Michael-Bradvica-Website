@@ -75,5 +75,8 @@
 
         [Route("single-pathway")]
         public IActionResult SinglePathway() => View();
+
+        [Route("your-application-is-not-the-database")]
+        public IActionResult YourApplicationIsNotTheDatabase() => View();
     }
 }
