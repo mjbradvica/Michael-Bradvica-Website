@@ -78,5 +78,11 @@
 
         [Route("your-application-is-not-the-database")]
         public IActionResult YourApplicationIsNotTheDatabase() => View();
+
+        [Route("simplifying-ado-net-boilerplate")]
+        public IActionResult SimplifyingAdoNetBoilerplate() => View();
+
+        [Route("encapsulation-with-dapper")]
+        public IActionResult EncapsulationWithDapper() => View();
     }
 }

@@ -8,6 +8,8 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("EncapsulationWithDapper", "Encapsulation with Dapper"),
+                BlogPost.AddPost("SimplifyingAdoNetBoilerplate","Simplifying ADO.NET Boilerplate"),
                 BlogPost.AddPost("YourApplicationIsNotTheDatabase", "Your Application is NOT the Data(base)"),
                 BlogPost.AddPost("SinglePathway", "Single Pathway"),
                 BlogPost.AddPost("CovarianceAndContravarianceQuickGuide", "Covariance and Contravariance Quick Guide"),

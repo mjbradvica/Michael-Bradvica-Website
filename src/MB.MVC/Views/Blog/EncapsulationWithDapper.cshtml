@@ -1,0 +1,111 @@
+﻿<blog-post title="Encapsulation With Dapper">
+    <pre>
+<code>
+public async Task&lt;IEnumerable&lt;MyObject&gt;&gt; GetAll()
+{
+    return await _sqlConnection.QueryAsync&lt;MyObject&gt;("SELECT * from dbo.MyTable");
+}
+</code>
+</pre>
+    
+    <pre>
+        <code>
+public class MyObject
+{
+    public MyObject(Guid id, DateTime timestamp)
+    {
+        Id = id;
+        Timestamp = timestamp;
+    }
+
+    public Guid Id { get; }
+
+    public DateTime Timestamp { get; }
+}
+        </code>
+    </pre>
+    
+    This is not:
+    
+    <pre>
+        <code>
+public class MyObject
+{
+    public MyObject(Guid id, Name name, ZonedDateTime timestamp)
+    {
+        Id = id;
+        Name = name;
+        Timestamp = timestamp;
+    }
+
+    public Guid Id { get; }
+
+    public Name Name { get; }
+
+    public ZonedDateTime Timestamp { get; }
+}
+        </code>
+    </pre>
+    
+    <pre>
+        <code>
+public class CustomerRecord
+{
+    public Guid Id { get; set; }
+
+    public string Name { get; set; } = string.Empty;
+
+    public long Timestamp_Instant { get; set; }
+
+    public string Timestamp_DateTimeZoneId { get; set; } = string.Empty;
+}
+        </code>
+    </pre>
+    
+    <pre>
+        <code>
+public async Task&lt;IReadOnlyList&lt;Customer&gt;&gt; GetAllCustomers()
+{
+    return (await _sqlConnection.QueryAsync&lt;CustomerRecord&gt;("SELECT * FROM dbo.Customer"))
+        .Select(record =&gt; new Customer(
+            record.Id,
+            new Name(record.Name),
+            new ZonedDateTime(Instant.FromUnixTimeTicks(record.Timestamp_Instant), DateTimeZoneProviders.Bcl[record.Timestamp_DateTimeZoneId])))
+        .ToList();
+}
+        </code>
+    </pre>
+    
+    <pre>
+        <code>
+public class CustomerRecord
+{
+    public Guid Id { get; set; }
+
+    public string Name { get; set; } = string.Empty;
+
+    public long Timestamp_Instant { get; set; }
+
+    public string Timestamp_DateTimeZoneId { get; set; } = string.Empty;
+
+    public Customer FromRecord()
+    {
+        return new Customer(Id, new Name(Name), new ZonedDateTime(Instant.FromUnixTimeTicks(Timestamp_Instant), DateTimeZoneProviders.Bcl[Timestamp_DateTimeZoneId]));
+    }
+}
+        </code>
+    </pre>
+    
+    <pre>
+<code>
+public async Task&lt;IReadOnlyList&lt;Customer&gt;&gt; GetAllCustomers()
+{
+    return (await _sqlConnection.QueryAsync&lt;CustomerRecord&gt;("SELECT * FROM dbo.Customer"))
+        .Select(record =&gt; record.FromRecord())
+        .ToList();
+}
+</code>
+</pre>
+    
+    <h5 class="title is-5">You May Not Need Dapper</h5>
+</blog-post>

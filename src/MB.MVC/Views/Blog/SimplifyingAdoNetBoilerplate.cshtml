@@ -1,0 +1,169 @@
+﻿<blog-post title="Simplifying ADO.NET Boilerplate">
+    
+    <h5 class="title is-5">Our Base Class</h5>
+
+    <pre>
+        <code>
+public abstract class BaseRepository
+{
+    private readonly SqlConnection _sqlConnection;
+
+    protected BaseRepository(SqlConnection sqlConnection)
+    {
+        _sqlConnection = sqlConnection;
+    }
+
+    protected async Task&lt;int&gtl; ExecuteCommand(string sql, CancellationToken cancellationToken = default)
+    {
+        await _sqlConnection.OpenAsync(cancellationToken);
+
+        var transaction = _sqlConnection.BeginTransaction();
+
+        var sqlCommand = new SqlCommand(sql, _sqlConnection, transaction);
+
+        int result;
+
+        try
+        {
+            result = await sqlCommand.ExecuteNonQueryAsync(cancellationToken);
+
+            await transaction.CommitAsync(cancellationToken);
+        }
+        catch (Exception)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+
+            throw;
+        }
+        finally
+        {
+            await _sqlConnection.CloseAsync();
+        }
+
+        return result;
+    }
+
+    protected async Task&lt;IReadOnlyListTEntity&gt;&gt; ExecuteQuery&lt;TEntity&gt;(string sql, Func&lt;SqlDataReader, TEntity&gt; conversionFunc, CancellationToken cancellationToken = default)
+    {
+        await _sqlConnection.OpenAsync(cancellationToken);
+
+        var sqlQuery = new SqlCommand(sql, _sqlConnection);
+
+        var result = new List&lt;TEntity&gt;();
+
+        try
+        {
+            var sqlDataReader = await sqlQuery.ExecuteReaderAsync(cancellationToken);
+
+
+            while (await sqlDataReader.ReadAsync(cancellationToken))
+            {
+                result.Add(conversionFunc.Invoke(sqlDataReader));
+            }
+        }
+        catch (Exception)
+        {
+            // Log Exception
+
+            throw;
+        }
+        finally
+        {
+            await _sqlConnection.CloseAsync();
+        }
+
+        return result;
+    }
+}
+        </code>
+    </pre>
+    
+    <h5 class="title is-5">Implementation</h5>
+    
+    <pre>
+        <code>
+public class Customer
+{
+    public Customer(Guid id, string name)
+    {
+        Id = id;
+        Name = name;
+    }
+
+    public Customer(string name)
+        : this(Guid.NewGuid(), name)
+    {
+    }
+
+    public Guid Id { get; }
+
+    public string Name { get; }
+}
+        </code>
+    </pre>
+    
+    <pre>
+        <code>
+public class CustomerRepository : BaseRepository
+{
+    public CustomerRepository(SqlConnection sqlConnection)
+        : base(sqlConnection)
+    {
+    }
+
+    public async Task&lt;int&gt; AddCustomer(Customer customer)
+    {
+        return await ExecuteCommand(
+            $"INSERT INTO dbo.Customer VALUES ('{customer.Id}', '{customer.Name}')");
+    }
+
+    public async Task&lt;IReadOnlyList&lt;Customer&gt;&gt; GetAllCustomers()
+    {
+        return await ExecuteQuery(
+            "SELECT * FROM dbo.Customer",
+            reader => new Customer(
+                    reader.GetGuid(0),
+                    reader.GetString(1)));
+    }
+}
+        </code>
+    </pre>
+    
+    <h5 class="title is-5">
+        Query Reuse
+    </h5>
+    
+    <pre>
+        <code>
+public class CustomerRepository : BaseRepository
+{
+    private readonly Func&lt;DbDataReader, Customer&gt; _customerFunc = reader =&gt; 
+        new Customer(
+        reader.GetGuid(0),
+        reader.GetString(1));
+
+    public CustomerRepository(SqlConnection sqlConnection)
+        : base(sqlConnection)
+    {
+    }
+
+    public async Task&lt;int&gt; AddCustomer(Customer customer)
+    {
+        return await ExecuteCommand($"INSERT INTO dbo.Customer VALUES ('{customer.Id}', '{customer.Name}')");
+    }
+
+    public async Task&lt;IReadOnlyList&lt;Customer&gt;&gt; GetAllCustomers()
+    {
+        return await ExecuteQuery("SELECT * FROM dbo.Customer", _customerFunc);
+    }
+
+    public async Task&lt;Customer&gt; GetById(Guid id)
+    {
+        return (await ExecuteQuery($"SELECT TOP(1) * FROM dbo.Customer WHERE Id='{id}'", _customerFunc)).First();
+    }
+}
+        </code>
+    </pre>
+    
+    <h5 class="title is-5">Conclusion</h5>
+</blog-post>
