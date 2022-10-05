@@ -84,5 +84,8 @@
 
         [Route("encapsulation-with-dapper")]
         public IActionResult EncapsulationWithDapper() => View();
+
+        [Route("MimickingUseStateInVue")]
+        public IActionResult MimickingUseStateInVue() => View();
     }
 }

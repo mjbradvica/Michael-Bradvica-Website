@@ -1,0 +1,41 @@
+﻿<blog-post title="Mimicking useState in Vue">
+    <h5 class="title is-5">The What</h5>
+    <p>useState is the most basic hook in React. It allows you to store a variable and your application will re-render when said variable is updated.</p>
+    <p>Vue has the same concept with Ref's. They serve the same purpose but are implemented differently.</p>
+    <h5 class="title is-5">The Why?</h5>
+    <p>Ref's have a few disadvantages compared to useState:</p>
+    <ul>
+        <li>Generic Ref's require a cast back to a type of Ref. (This is a TypeScript restriction)</li>
+        <li>It can be confusing having to dereference state with the ".value" property for both getters and setters</li>
+        <li>You are unable to enforce state initialization</li>
+    </ul>
+    <p>We can solve all three of these issues with a very simple composable.</p>
+    <h5 class="title is-5">The How</h5>
+    <pre>
+        <code>
+    import { ref, Ref } from "vue";
+
+    export default function useState&lt;T&gt;(initial: T): [state: Ref&lt;T&gt;, setState: (newState: T) => void] {
+        const currentState = ref&lt;T&gt;(initial) as Ref&lt;T&gt;;
+
+        const setState = (newState: T): void => {
+            currentState.value = newState;
+        };
+
+        return [currentState, setState];
+    }
+        </code>
+    </pre>
+    
+    <p>And we can use it like a normal useState hook.</p>
+    
+    <pre>
+        <code>
+    &lt;script setup lang="ts"&gt;
+        const [name, setName] = useState&lt;string&gt;("jimmy");
+    &lt;/script&gt;
+        </code>
+    </pre>
+
+    <p>With our new composable, we no longer need to worry about any generic state casts. We only dereference state for getters, and state initialization is always enforced. This composable gives us three quality of life fixes that can greatly help us for the duration of our applications' lifecycle.</p>
+</blog-post>

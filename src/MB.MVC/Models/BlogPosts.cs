@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("MimickingUseStateInVue", "Mimicking useState in Vue"),
                 BlogPost.AddPost("EncapsulationWithDapper", "Encapsulation with Dapper"),
                 BlogPost.AddPost("SimplifyingAdoNetBoilerplate","Simplifying ADO.NET Boilerplate"),
                 BlogPost.AddPost("YourApplicationIsNotTheDatabase", "Your Application is NOT the Data(base)"),
