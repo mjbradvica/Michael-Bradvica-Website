@@ -85,7 +85,10 @@
         [Route("encapsulation-with-dapper")]
         public IActionResult EncapsulationWithDapper() => View();
 
-        [Route("MimickingUseStateInVue")]
+        [Route("mimicking-usestate-in-vue")]
         public IActionResult MimickingUseStateInVue() => View();
+
+        [Route("navigating-vues-onmounted-ambiguity")]
+        public IActionResult NavigatingVuesOnMountedAmbiguity() => View();
     }
 }

@@ -1,0 +1,71 @@
+﻿<blog-post title="Navigating Vue's onMounted Ambiguity">
+    <article-section section-title="Understanding the onMounted Hook">
+        <p>If you come from a React background, you may already be aware of <a href="https://www.robinwieruch.de/react-hooks-fetch-data/" target="_blank">this rule</a>: avoid async callbacks in useEffect hooks. 
+            This is because the return type of said hook is not supposed to be a Promise. For instance, in Vue, the onMounted hook serves some of the same purposes as useEffect in React, but it is implemented differently. 
+            In Vue, the <a href="https://vuejs.org/api/composition-api-lifecycle.html#onmounted" target="_blank">onMounted hook</a> is called <em>after</em> the component has been mounted. This means it does not require promises to resolve in order to render.
+        </p>
+        <p>
+            So, while this works:
+        </p>
+        <pre>
+        <code>
+        onMounted(async () => {
+            // await something in here
+        });
+        </code>
+        </pre>
+        <p>
+            The documentation says otherwise:
+        </p>
+        <pre>
+        <code>
+        function onMounted(callback: () => void): void
+        </code>
+        </pre>
+        <blockquote>
+            Note: Return type of void is not the same as a Promise of type void
+        </blockquote>
+        <p>If we try to peek into the actual code, we see this--even for TypeScript.</p>
+        <pre>
+        <code>
+        export declare const onMounted: (hook: () => any, target?: ComponentInternalInstance | null) => false | Function | undefined;
+        </code>
+        </pre>
+        <p>The above code leads to the ambiguity of how this hook should or should not be implemented. This may be a small issue now, but it may present itself as a pain point with fellow developers who may interpret the language in one way or another.</p>
+    </article-section>
+    <article-section section-title="Using a custom hook instead">
+        <p>Rather than fussing about how fellow developers should or should not use the onMounted hook, it is best to provide them with a composable so they never need to think about it.</p>
+        <h4 class="title is-5">useMountedFetch</h4>
+        <pre>
+        <code>
+        import { onMounted, Ref, ref } from "vue";
+
+        export default function useMountedFetch&lt;T&gt;(initial: T, callback: () => Promise&lt;void&gt;): Ref&lt;T&gt; {
+          const state = ref&lt;T&gt;(initial) as Ref&lt;T&gt;;
+
+          onMounted(() => {
+            const fetchData = async (): Promise&lt;void&gt; => {
+              const result = await callback();
+
+              state.value = result;
+            };
+
+            void fetchData();
+          });
+
+          return state;
+        }
+        </code>
+        </pre>
+        <p>Then use the composable as follows:</p>
+        <pre>
+        <code>
+        const myData = useMountedFetch("", async () => {
+            // fetch or axios call in here
+        });
+        </code>
+        </pre>
+        <blockquote>I recommend that you do not inline your data calls. Instead, move them to a separate file.</blockquote>
+        <p>This will fulfill the needs of any necessary data fetching when a component renders. Providing our fellow developers with a composable takes the decision out of their hands. We also <a asp-controller="Blog" asp-action="MimickingUseStateInVue" target="_blank">enjoy the niceties</a> of avoiding issues with Ref's. The use of a custom composable here leads to a more consistent and predictable codebase.</p>
+    </article-section>
+</blog-post>
