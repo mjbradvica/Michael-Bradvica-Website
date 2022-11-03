@@ -90,5 +90,8 @@
 
         [Route("navigating-vues-onmounted-ambiguity")]
         public IActionResult NavigatingVuesOnMountedAmbiguity() => View();
+
+        [Route("avoid-vue-component-events")]
+        public IActionResult AvoidVueComponentEvents() => View();
     }
 }

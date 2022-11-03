@@ -1,0 +1,85 @@
+﻿<blog-post title="Avoid Vue Component Events">
+    <article-section section-title="Overview">
+        <p>Component events in Vue allow you to emit a custom event from a child component.</p>
+        <pre>
+            <code>
+        &lt;button @@click=$emit('myEvent')&gt;Im A Button&lt;/&lt;button&gt;
+            </code>
+        </pre>
+        <p>You can then listen to said event from a parent component.</p>
+        <pre>
+            <code>
+        &lt;MyComponent @@some-event="callback" /&gt;
+            </code>
+        </pre>
+        <p>This is an unnecessary feature in Vue that should be avoided entirely.</p>
+    </article-section>
+    <article-section section-title="Issues">
+        <p>Compare this to a callback, which gives you:</p>
+        <ol>
+            <li>Built in type safety</li>
+            <li>No strings to deal with</li>
+            <li>No boilerplate to define emits</li>
+            <li>A uniform convention with other front-end frameworks</li>
+        </ol>
+        <h4 class="title is-5 my-3">Emits have no built-in type safety</h4>
+        <p>Callbacks in Vue are type safety because you define the delegate in the component properties.</p>
+        <pre>
+            <code>
+        &lt;script setup lang="ts"&gt;
+            export interface MyComponentProperties {
+                myCallback(): =&gt; void;
+            }
+
+            const properties = defineProps&gt;MyComponentProperties&gt;();
+        &lt;script&gt;
+            </code>
+        </pre>
+        <p>Components events are, by default, not type safe. They offer you the ability to add in type safety like so:</p>
+        <pre>
+            <code>
+        &lt;script setup lang="ts"&gt;
+            const emit = defineEmits&lt;{
+                (e: 'change', id: number): void
+                (e: 'update', value: string): void
+            }&gt;()
+        &lt;/script&gt;
+            </code>
+        </pre>
+        <p>There is no need to do this if you can accomplish the same thing in your properties' definition file.</p>
+        <h4 class="title is-5 my-3">Emits require strings</h4>
+        <p>When you use a component event, you need to define the event with a name. You need to either hard code a string or use a separate constant.</p>
+        <pre>
+            <code>
+        &lt;button @@click=$emit('myEvent')&gt;Im A Button&lt;/button&gt;
+            </code>
+        </pre>
+        <p>This is extra busy work when a callback requires none of this:</p>
+        <pre>
+            <code>
+        &lt;button @@click="handleClick"&gt;Im A Button&lt;/button&gt;
+
+        &lt;script setup lang="ts"&gt;
+            const handleClick = (event: Event): void =&gt; {
+                // handle
+            };
+        &lt;/script&gt;
+            </code>
+        </pre>
+        <h4 class="title is-5 my-3">Emits require boilerplate definitions</h4>
+        <p>Using a component event means you need to annotate your components with a definition for each event you intend to emit.</p>
+        <pre>
+            <code>
+        &lt;script setup&gt;
+            defineEmits(['inFocus', 'submit'])
+        &lt;/script&gt;
+            </code>
+        </pre>
+        <p>Again callbacks are defined in your properties interface and do not require such configuration.</p>
+        <h4 class="title is-5 my-3">Emits are not uniform</h4>
+        <p>You handle events in React with callbacks. You handle events in Angular with callbacks. You should handle events in Vue with callbacks as well. All of these frameworks are functional by nature. Use functions.</p>
+    </article-section>
+    <article-section section-title="Conclusion">
+        <p>Component events in Vue are a useless feature. They offer a solution to a problem that does not exist. They increase your line count, while also diminishing code quality. Use normal callbacks passed via properties.</p>
+    </article-section>
+</blog-post>

@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("AvoidVueComponentEvents", "Avoid Vue Component Events"),
                 BlogPost.AddPost("NavigatingVuesOnMountedAmbiguity", "Navigating Vue's onMounted Ambiguity"),
                 BlogPost.AddPost("MimickingUseStateInVue", "Mimicking useState in Vue"),
                 BlogPost.AddPost("EncapsulationWithDapper", "Encapsulation with Dapper"),
