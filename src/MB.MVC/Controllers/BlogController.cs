@@ -93,5 +93,8 @@
 
         [Route("avoid-vue-component-events")]
         public IActionResult AvoidVueComponentEvents() => View();
+
+        [Route("dependency-injection-magic-number")]
+        public IActionResult DependencyInjectionMagicNumber() => View();
     }
 }
