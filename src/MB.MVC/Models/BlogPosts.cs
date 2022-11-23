@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("AlwaysInitializeState", "Always Initialize State"),
                 BlogPost.AddPost("DependencyInjectionMagicNumber", "Dependency Injection Magic Number"),
                 BlogPost.AddPost("AvoidVueComponentEvents", "Avoid Vue Component Events"),
                 BlogPost.AddPost("NavigatingVuesOnMountedAmbiguity", "Navigating Vue's onMounted Ambiguity"),

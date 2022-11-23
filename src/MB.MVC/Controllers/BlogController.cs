@@ -96,5 +96,8 @@
 
         [Route("dependency-injection-magic-number")]
         public IActionResult DependencyInjectionMagicNumber() => View();
+
+        [Route("always-initialize-state")]
+        public IActionResult AlwaysInitializeState() => View();
     }
 }
