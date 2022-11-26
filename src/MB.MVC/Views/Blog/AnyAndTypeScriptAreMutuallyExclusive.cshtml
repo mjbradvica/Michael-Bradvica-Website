@@ -1,0 +1,39 @@
+﻿<blog-post title="Any and TypeScript are Mutually Exclusive">
+    <article-section section-title="Overview">
+        <p>
+            One of the best additions to the front-end development landscape was TypeScript. It tames the wild west of JavaScript by providing support for types. TypeScript adds live IntelliSense and interfaces for our objects. Front-end development is a lot better and easier today with the addition of TypeScript.
+        </p>
+        <p>
+            TypeScript is a superset of JavaScript; at the end of the day everything is transpiled back into JavaScript. This means that anything you can do in JavaScript, you still can do in TypeScript. It may be a flaw, but it's something we should keep in mind.
+        </p>
+        <p>One of the biggest danger zones developers face is the option to use the 'any' type, disregarding type checking.</p>
+        <blockquote>
+            There's no point using TypeScript if you allow the 'any' type to exist.
+        </blockquote>
+    </article-section>
+    <article-section section-title="Choose One, Avoid the Other">
+        <p>
+            The use of 'any' will metastasize if you allow it to proliferate in an application. You must be proactive with your approach, including but not limited to:
+        </p>
+        <ul>
+            <li>Enabling <a href="https://www.typescriptlang.org/tsconfig#strict" target="_blank">strict mode</a> in your tsconfig file</li>
+            <li>Forcing the <a href="https://typescript-eslint.io/rules/no-explicit-any/" target="_blank">no-explicit-any</a> to any error</li>
+            <li>Avoiding third-party libraries that have excessive use of 'any' in function calls or interfaces</li>
+        </ul>
+        <p>If you still want to use the 'any' type, don't use TypeScript. The usage defeats the purpose of enabling type checking in the first place.</p>
+    </article-section>
+    <article-section section-title="Unknown and Never are Just as Bad">
+        <p>Unfortunately it's not just the 'any' type that we should avoid. Both 'never' and 'unknown' are equally bad. These types exist as a no-man's-land between the type-safe world and the chaotic universe of the 'any' type. You should employ the same zeal against 'unknown' and 'never' as you do with the 'any' type.</p>
+    </article-section>
+    <article-section section-title="Even Stricter Typing">
+        <p>
+            If you are already not using ESLint, <a asp-action="TwoNpmPackagesForEveryFrontendProject" asp-controller="Blog" target="_blank">you should be</a>. Buy yourself even more insurance for your project by using the following built-in configurations:
+        </p>
+        <ul>
+            <li><a href="https://typescript-eslint.io/docs/linting/configs#recommended-requiring-type-checking" target="_blank">Required Type Checking</a></li>
+            <li><a href="https://typescript-eslint.io/docs/linting/configs#strict" target="_blank">Strict Rule Set</a></li>
+        </ul>
+        <p>These two extra configurations will enable more typed rules to help avoid unnecessary and costly bugs.</p>
+        <p>Choosing TypeScript is just one step in moving to a better development environment. Adding TypeScript to your application is not enough. You must retain a fervent dedication to the idea of strict types in your application.</p>
+    </article-section>
+</blog-post>
