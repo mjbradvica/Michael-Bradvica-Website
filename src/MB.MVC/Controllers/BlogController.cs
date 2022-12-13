@@ -102,5 +102,8 @@
 
         [Route("any-and-typescript-are-mutually-exclusive")]
         public IActionResult AnyAndTypeScriptAreMutuallyExclusive() => View();
+
+        [Route("mimicking-use-computed-in-react")]
+        public IActionResult MimickingUseComputedInReact() => View();
     }
 }
