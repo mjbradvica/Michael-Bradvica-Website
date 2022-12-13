@@ -96,5 +96,8 @@
 
         [Route("dependency-injection-magic-number")]
         public IActionResult DependencyInjectionMagicNumber() => View();
+
+        [Route("mimicking-use-computed-in-react")]
+        public IActionResult MimickingUseComputedInReact() => View();
     }
 }

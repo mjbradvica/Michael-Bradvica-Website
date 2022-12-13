@@ -1,0 +1,67 @@
+﻿<blog-post title="Mimicking useComputed in React">
+    <article-section section-title="Background">
+        <p>One of the best features in Vue is the <a href="https://vuejs.org/guide/essentials/computed.html#basic-example" target="_blank">useComputed</a> composable. It allows use to create a pure function that reacts in accordance to the callback passed to it.</p>
+        <p>One use of the useComputed composable is to generate a last name from a first and last:</p>
+        <pre>
+            <code>
+        const first = ref&lt;string&gt;("");
+        const last = ref&lt;string&gt;("");   
+
+        const lastName = computed&lt;string&gt;(() =&gt; first + last);
+            </code>
+        </pre>
+        <p>Here is how we would normally concatenate two names in React:</p>
+        <pre>
+            <code>
+        const [first, setFirst] = useState&lt;string&gt;("");
+        const [last, setLast] = useState&lt;string&gt;("");
+
+        const [full, setFull] = useState&lt;string&gt;("");
+
+        useEffect(() =&gt; {
+            setFull(first + last);
+        }, [first, last]);
+            </code>
+        </pre>
+        <p>
+            In React, we need to create a state variable, then update this variable via a useEffect hook. In many cases, this is necessary if we must update the variable at a later time. Since this use case is a pure function, we need only the result of the function. Creating our own version of the computed function would allow us to inline our code and keep the result pure.
+        </p>
+    </article-section>
+    <article-section section-title="useComputed Hook">
+        <p>Here is our hook:</p>
+        <pre>
+            <code>
+        import { useEffect, useState } from "react";
+
+        export default function useComputed&lt;T&gt;(initialState: T, callback: () =&gt; T): T {
+          const [state, setState] = useState&lt;T&gt;(initialState);
+
+          useEffect(() =&gt; {
+            setState(callback);
+          }, [callback]);
+
+          return state;
+        }
+            </code>
+        </pre>
+        <p>And here is how we use it:</p>
+        <pre>
+            <code>
+        const [first, setFirst] = useState&lt;string&gt;("");
+        const [last, setLast] = useState&lt;string&gt;("");
+
+        const fullName = useComputed(
+          "",
+          useCallback(() =&gt; first + last, [first, last])
+        );      
+            </code>
+        </pre>
+        <p>Unlike our Vue counterpart we need to have a few extras:</p>
+        <ul>
+            <li>Our state variable needs to be provided with an initial value.</li>
+            <li>Our function <i>must</i> be wrapped in a useCallback; if we omit this it will cause an infinite loop.</li>
+        </ul>
+        <p>Our end result allows us to remove some of the ceremony around create two separate hooks and wiring them together. As long as we remember to wrap our function in a useCallback hook, the result is a net positive.
+        </p>
+    </article-section>
+</blog-post>
