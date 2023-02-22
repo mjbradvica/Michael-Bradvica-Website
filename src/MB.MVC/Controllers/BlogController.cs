@@ -105,5 +105,8 @@
 
         [Route("mimicking-use-computed-in-react")]
         public IActionResult MimickingUseComputedInReact() => View();
+
+        [Route("specify-typescript-generics")]
+        public IActionResult SpecifyTypeScriptGenerics() => View();
     }
 }

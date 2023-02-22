@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("SpecifyTypeScriptGenerics", "Specify TypeScript Generics"),
                 BlogPost.AddPost("MimickingUseComputedInReact", "Mimicking useComputed in React"),
                 BlogPost.AddPost("AnyAndTypeScriptAreMutuallyExclusive", "Any and TypeScript are Mutually Exclusive"),
                 BlogPost.AddPost("AlwaysInitializeState", "Always Initialize State"),
