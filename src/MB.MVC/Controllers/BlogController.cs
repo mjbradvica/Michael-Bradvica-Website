@@ -108,5 +108,8 @@
 
         [Route("specify-typescript-generics")]
         public IActionResult SpecifyTypeScriptGenerics() => View();
+
+        [Route("avoid-multi-slot-content-projection")]
+        public IActionResult AvoidMultiSlotContentProjection () => View();
     }
 }

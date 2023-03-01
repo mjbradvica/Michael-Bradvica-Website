@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("AvoidMultiSlotContentProjection", "Avoid Multi-Slot Content Projection"),
                 BlogPost.AddPost("SpecifyTypeScriptGenerics", "Specify TypeScript Generics"),
                 BlogPost.AddPost("MimickingUseComputedInReact", "Mimicking useComputed in React"),
                 BlogPost.AddPost("AnyAndTypeScriptAreMutuallyExclusive", "Any and TypeScript are Mutually Exclusive"),
@@ -17,7 +18,7 @@
                 BlogPost.AddPost("NavigatingVuesOnMountedAmbiguity", "Navigating Vue's onMounted Ambiguity"),
                 BlogPost.AddPost("MimickingUseStateInVue", "Mimicking useState in Vue"),
                 BlogPost.AddPost("EncapsulationWithDapper", "Encapsulation with Dapper"),
-                BlogPost.AddPost("SimplifyingAdoNetBoilerplate","Simplifying ADO.NET Boilerplate"),
+                BlogPost.AddPost("SimplifyingAdoNetBoilerplate", "Simplifying ADO.NET Boilerplate"),
                 BlogPost.AddPost("YourApplicationIsNotTheDatabase", "Your Application is NOT the Data(base)"),
                 BlogPost.AddPost("SinglePathway", "Single Pathway"),
                 BlogPost.AddPost("CovarianceAndContravarianceQuickGuide", "Covariance and Contravariance Quick Guide"),
