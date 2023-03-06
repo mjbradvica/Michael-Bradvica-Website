@@ -110,6 +110,9 @@
         public IActionResult SpecifyTypeScriptGenerics() => View();
 
         [Route("avoid-multi-slot-content-projection")]
-        public IActionResult AvoidMultiSlotContentProjection () => View();
+        public IActionResult AvoidMultiSlotContentProjection() => View();
+
+        [Route("code-is-a-by-product")]
+        public IActionResult CodeIsAByProduct() => View();
     }
 }
