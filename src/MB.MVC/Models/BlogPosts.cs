@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("TestingIsInsurance", "Testing Is Insurance"),
                 BlogPost.AddPost("CodeIsAByProduct", "Code is a By-product"),
                 BlogPost.AddPost("AvoidMultiSlotContentProjection", "Avoid Multi-Slot Content Projection"),
                 BlogPost.AddPost("SpecifyTypeScriptGenerics", "Specify TypeScript Generics"),

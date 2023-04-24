@@ -114,5 +114,8 @@
 
         [Route("code-is-a-by-product")]
         public IActionResult CodeIsAByProduct() => View();
+
+        [Route("testing-is-insurance")]
+        public IActionResult TestingIsInsurance() => View();
     }
 }
