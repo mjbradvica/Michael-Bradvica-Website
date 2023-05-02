@@ -117,5 +117,8 @@
 
         [Route("testing-is-insurance")]
         public IActionResult TestingIsInsurance() => View();
+
+        [Route("do-not-have-software-babies")]
+        public IActionResult DoNotHaveSoftwareBabies() => View();
     }
 }
