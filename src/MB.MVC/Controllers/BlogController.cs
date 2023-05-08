@@ -120,5 +120,8 @@
 
         [Route("do-not-have-software-babies")]
         public IActionResult DoNotHaveSoftwareBabies() => View();
+
+        [Route("use-value-defaults")]
+        public IActionResult UseValueDefaults() => View();
     }
 }

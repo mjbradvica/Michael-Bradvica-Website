@@ -1,0 +1,37 @@
+﻿<blog-post title="Use Value Defaults">
+	<article-section section-title="Declarative Variables">
+		<p>Value Defaults for front-end applications are very simple. A file with default values for primitive types and arrays.</p>
+		<pre>
+			<code>
+		const ValueDefaults = {
+		  String: '',
+		  Number: 0,
+		  Boolean: false,
+		  Date: new Date(),
+		  emptyArray: &lt;T&gt;(): Array&lt;T&gt; => new Array&lt;T&gt;(),
+		};
+
+		export default ValueDefaults;
+			</code>
+		</pre>
+		<p>
+			This allows us to be absolutely explicit with the value that you are initializing in your application.
+		</p>
+		<pre>
+			<code>
+		const myVariable = ref&lt;string&gt;('');
+			</code>
+		</pre>
+		<p>versus...</p>
+		<pre>
+			<code>
+		const myVariable = ref&lt;string&gt;(ValueDefaults.String);
+			</code>
+		</pre>
+		<p>The first is elusive. Did you really mean to use an empty string, or did you just forget to initialize with a value? The second example is absolute. Other developers on your project clearly understand your intent.</p>
+	</article-section>
+	<article-section section-title="Pair with No Magic Numbers">
+		<p>Using this small file in conjunction with the ESLint rule <a href="https://typescript-eslint.io/rules/no-magic-numbers/" target="_blank">No Magic Numbers</a> will result in high value for your application with almost little effort. This rule is not included in the default config, so you will need to turn it on yourself.</p>
+		<p>Small, simple changes to your application (like using Value Defaults) contribute to a strong code base.</p>
+	</article-section>
+</blog-post>

@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("UseValueDefaults", "Use Value Defaults"),
                 BlogPost.AddPost("DoNotHaveSoftwareBabies", "Do Not Have (Software) Babies"),
                 BlogPost.AddPost("TestingIsInsurance", "Testing Is Insurance"),
                 BlogPost.AddPost("CodeIsAByProduct", "Code is a By-product"),
