@@ -123,5 +123,8 @@
 
         [Route("use-value-defaults")]
         public IActionResult UseValueDefaults() => View();
+
+        [Route("avoid-bad-types")]
+        public IActionResult AvoidBadTypes() => View();
     }
 }
