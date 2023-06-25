@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("MimickingUseReducerInVueAndAngular", "Mimicking useReducer in Vue & Angular"),
                 BlogPost.AddPost("AvoidBadTypes", "Avoid Bad Types"),
                 BlogPost.AddPost("UseValueDefaults", "Use Value Defaults"),
                 BlogPost.AddPost("DoNotHaveSoftwareBabies", "Do Not Have (Software) Babies"),

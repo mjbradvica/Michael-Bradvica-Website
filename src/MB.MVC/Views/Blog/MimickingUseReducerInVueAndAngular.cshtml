@@ -1,0 +1,98 @@
+﻿<blog-post title="Mimicking useReducer in Vue & Angular">
+    <article-section section-title="A Common State Problem">
+        <p>The useReducer hook exists to solve a common problem in front-end development. Having to drill state and callbacks through three to five components. Using normal state variables and callbacks leads to multiple bloated component props; but using global state is overkill.</p>
+        <p>This is where the useReducer hooks excels. It helps us when we need that goldilocks state solution of requiring more than local state-but less than global state.</p>
+    </article-section>
+    <article-section section-title="It's Just A Switch Statement">
+        <p>The useReducer hooks comes in three parts:</p>
+        <ul>
+            <li>The hook itself--a wrapper around some state and a function to manipulate said state</li>
+            <li>A reducer function that will return a new state object given our current state and some action</li>
+            <li>A set of actions that are typically modeled as an enum</li>
+        </ul>
+        <p>Another way to think of this hook is the <a href="https://en.wikipedia.org/wiki/Command_pattern" target="_blank">Command Pattern</a>. We are taking n number of callbacks and condensing them into an object or enum.</p>
+    </article-section>
+    <article-section section-title="Creating Out Hooks">
+        <p>
+            Sadly, unlike React, neither Vue nor Angular come with a reducer hook out of the box. However, it is very simple to re-create these powerful tools.
+        </p>
+        <h4 class="title is-5">Vue</h4>
+        <pre>
+            <code>
+        import type { Ref, ref } from "vue";
+
+        export default function useReducer&lt;T, K&gt;(
+          reducer: (currentState: T, action: K) =&gt; T,
+          defaultState: T
+        ): [Ref&lt;T&gt;, (action: K) =&gt; void] {
+          const state = ref&lt;T&gt;(defaultState) as Ref&lt;T&gt;;
+
+          const dispatcher = (action: K): void =&gt; {
+            state.value = reducer(state.value, action));
+          };
+
+          return [state, dispatcher];
+        }
+            </code>
+        </pre>
+        <h4 class="title is-5">Angular</h4>
+        <pre>
+            <code>
+        import { Signal, signal } from "@@angular/core";
+
+        export default function useReducer&lt;T, K&gt;(
+          reducer: (currentState: T, action: K) =&gt; T,
+          defaultState: T
+        ): [Signal&lt;T&gt;, (action: K) =&gt; void] {
+          const state = signal&lt;T&gt;(defaultState);
+
+          const dispatcher = (action: K): void =&gt; {
+            state.set(reducer(state(), action));
+          };
+
+          return [state, dispatcher];
+        }
+            </code>
+        </pre>
+        <p>Utilizing a hook is as easy as creating a reducer function and then initializing the hook where needed.</p>
+        <pre>
+            <code>
+        export enum MyAction {
+          First = 0,
+          Second = 1,
+          Third = 3,
+        }
+            </code>
+        </pre>
+        <pre>
+            <code>
+        export default function myReducer(state: MyState, action: IAction): MyState {
+          switch(action) {
+            case MyAction.FirstCase {
+              return updatedStateObject;
+            }
+            // more switch cases here...
+          }
+        }
+            </code>
+        </pre>
+        <p>In our component, we only need to pass the state object and dispatcher function to all of our child components.</p>
+        <pre>
+            <code>
+        &lt;template&gt;
+            &lt;MyChildComponent :state="state" :dispatcher="dispatcher" /&gt;
+        &lt;/template&gt;
+
+        &lt;script setup lang="ts"&gt;
+            import { useReducer } from "./UseReducer";
+
+            const [state, dispatcher] = useReducer(myReducerFunc, defaultState);
+        &lt;/script&gt;
+            </code>
+        </pre>
+    </article-section>
+    <article-section section-title="Conclusion">
+        <p>If you need to pass a payload to your reducer, simply update your actions to be objects that encase the action type and the payload. Cast the payload to the type needed in your reducer function, then use as needed.</p>
+        <p>The useReducer hook is a great standard feature in React that is easy to implement in Vue and Angular as well. It solves the common problem of how to handle state in intermediate settings where local and global state are ill suited for the task.</p>
+    </article-section>
+</blog-post>

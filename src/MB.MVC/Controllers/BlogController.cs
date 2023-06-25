@@ -126,5 +126,8 @@
 
         [Route("avoid-bad-types")]
         public IActionResult AvoidBadTypes() => View();
+
+        [Route("mimicking-use-reducer-in-vue-and-angular")]
+        public IActionResult MimickingUseReducerInVueAndAngular() => View();
     }
 }
