@@ -1,0 +1,118 @@
+﻿<blog-post title="Hook Return Types">
+    <article-section section-title="The &quot;3, 2, 1 Rule&quot;">
+        <p>We have three options for returning a hook in React, Vue, or Angular. We can choose amongst:</p>
+        <ul>
+            <li>A single variable</li>
+            <li>Destructed Array</li>
+            <li>Destructed object or object variable</li>
+        </ul>
+        <p>We just need to keep the "3, 2, 1 rule" in mind what we should return.</p>
+        <p>If we are returning just a single state object, then only the variable is required. There is no need to return it inside an array or object.</p>
+        <pre>
+            <code>
+        export default useMyHook(): string {
+            const partA = useState&lt;string&gt;();
+
+            // Other methods and lifecycle methods here.
+
+            return partA;
+        };
+
+        const myHookObject = useMyHook();
+            </code>
+        </pre>
+        <p>For two or three variables, an array is the best choice.</p>
+        <pre>
+            <code>
+        export default useMyHook(): [string, number] {
+            const partA = useState&lt;string&gt;();
+            const partB = useState&lt;number&gt;();
+
+            // Other methods and lifecycle methods here.
+
+            return [partA, partB];
+        };
+
+        const [partA, partB] = useMyHook();
+            </code>
+        </pre>
+        <p>
+            Finally, with three variables, we can still return an array; however anything that returns four or more variables should always be an object.
+        </p>
+        <pre>
+            <code>
+        export default useMyHook(): { partA: string, partB: number, partC: Date } {
+            // Ref's and other lifecycle methods here.
+
+            return { partA, partB, partC }
+        };
+
+        const myHookObject = useMyHook();
+            </code>
+        </pre>
+        <p>Sometimes if the object is large enough it may be a good idea to define an interface to avoid a confusing return type.</p>
+        <pre>
+            <code>
+        export default interface IMyHook {
+          partA: string;
+          partB: number;
+          partC: Date;
+          partD: boolean;
+        }
+
+        export default function useMyHook(): IMyHook {
+          // Ref's and other lifecycle methods here.
+
+          return { partA, partB, partC, partD };
+        }
+            </code>
+        </pre>
+    </article-section>
+    <article-section section-title="Vue is Complicated">
+        <p>Because of how <a href="https://vuejs.org/guide/reusability/composables.html#conventions-and-best-practices" target="_blank">Vue's reactivity works</a>, we need to return naked Ref's from our hooks. While the following is possible:</p>
+        <pre>
+            <code>
+        const myHook = useMyHook();
+
+        const [partA, partB] = useMyHook();
+
+        const { partA, partB, partC } = useMyHook();
+            </code>
+        </pre>
+        <p>The following is not allowed by default.</p>
+        <pre>
+            <code>
+        export default useMyHook(): { partA: string, partB: number, partC: Date } {
+            // Ref's and other lifecycle methods here.
+
+            return { partA, partB, partC }
+        };
+
+        const myHookObject = useMyHook();
+            </code>
+        </pre>
+        <p>Returning an object variable will cause the hook to lose its reactivity. We need to destructure the object like so.</p>
+        <pre>
+            <code>
+        const { partA, partB, partC } = useMyHook();
+            </code>
+        </pre>
+        <h4 class="title is-5">
+            There is a Way
+        </h4>
+        <p>
+            You can get around this by wrapping your hook in a "reactive" function that will restore the reactivity to your hook.
+        </p>
+        <pre>
+            <code>
+        const myHookObject = reactive(useMyHook());
+            </code>
+        </pre>
+        <p>Yet, I do not recommend doing this, as it may be confusing to other developers when and where this is needed.</p>
+    </article-section>
+    <article-section section-title="Conclusion">
+        <p>
+            If you stick to the "3, 2, 1 Rule," you will provide your fellow developers with a consistent interface to interact with hooks. Just remember to keep your Vue hooks destructured.
+        </p>
+    </article-section>
+</blog-post>

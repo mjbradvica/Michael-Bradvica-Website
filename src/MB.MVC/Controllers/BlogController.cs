@@ -129,5 +129,8 @@
 
         [Route("mimicking-use-reducer-in-vue-and-angular")]
         public IActionResult MimickingUseReducerInVueAndAngular() => View();
+
+        [Route("hook-return-types")]
+        public IActionResult HookReturnTypes() => View();
     }
 }
