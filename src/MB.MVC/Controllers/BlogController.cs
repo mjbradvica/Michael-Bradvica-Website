@@ -132,5 +132,8 @@
 
         [Route("hook-return-types")]
         public IActionResult HookReturnTypes() => View();
+
+        [Route("encapsulate-your-requests")]
+        public IActionResult EncapsulateYourRequests() => View();
     }
 }

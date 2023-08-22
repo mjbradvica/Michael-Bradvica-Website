@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("EncapsulateYourRequests", "Encapsulate Your Requests"),
                 BlogPost.AddPost("HookReturnTypes", "Hook Return Types"),
                 BlogPost.AddPost("MimickingUseReducerInVueAndAngular", "Mimicking useReducer in Vue & Angular"),
                 BlogPost.AddPost("AvoidBadTypes", "Avoid Bad Types"),
