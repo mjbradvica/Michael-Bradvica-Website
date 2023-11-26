@@ -1,0 +1,84 @@
+﻿<blog-post title="Differentiating Local, Intermediate, and Global State">
+    <article-section section-title="Introducation">
+        <p>In modern front-end applications, there are three primary means of applying state: local, intermediate, and global. Each has a specific usage.</p>
+        <p>It is important to know when and where to use each kind of state. It could be the difference between a good application, and a great one. Furthermore, state types build off of each other--that is to say, the intermediate state uses local state under the hood, and global state uses intermediate.</p>
+    </article-section>
+    <article-section section-title="Local">
+        <p>Local state concerns the <a href="https://react.dev/reference/react/useState" target="_blank">useState</a> hook React, <a href="https://vuejs.org/api/reactivity-core.html#ref" target="_blank">ref</a> in Vue, or <a href="https://angular.io/guide/signals" target="_blank">signals</a> in Angular. These are the basic building blocks in each framework. If you don't know what kind of state you require, there is a high chance you just want normal local state.</p>
+        <p>Use local state when:</p>
+        <ul>
+            <li>A single component needs to keep track of something locally</li>
+            <li>A component needs to pass a minimum amount of state to a few children</li>
+        </ul>
+    </article-section>
+    <article-section section-title="Intermediate">
+        <p>
+            Intermediate state builds on local state by taking a local state variable and introducing a switch statement. It is referred to as intermediate state because it solves situations wherein you need more than just local state- while global state would be overkill.
+        </p>
+        <blockquote>
+            Intermediate state = local state + switch statement
+        </blockquote>
+        <p>
+            The common pattern to use for intermediate state is a reducer. A reducer simply encapsulates the local state variable while exposing the state and a dispatch function. If you are using React, the <a href="https://react.dev/reference/react/useReducer" target="_blank">useReducer</a> hook is built into the framework. Do not fret if you use Vue or Angular; it is an <a asp-controller="Blog" asp-action="MimickingUseReducerInVueAndAngular" target="_blank">easy concept to copy.</a>
+        </p>
+        <p>
+            Applying intermediate state requires you to ask the following questions:
+        </p>
+        <ul>
+            <li>Am I drilling props though many components?</li>
+            <li>Do I have lots of callbacks going to a single state variable?</li>
+        </ul>
+        <p>If you answered yes to either of these questions, then you may want to consider using intermediate state. The dispatch function that is returned from a reducer hook is a form of <a href="https://en.wikipedia.org/wiki/Command_pattern" target="_blank">Command</a>. We are taking N number of parameters and condensing them into a single object. Ultimately, this allows us to reduce the number of callbacks that need to be passed to children-thus reducing our props count.</p>
+        <p>See the following code:</p>
+        <pre>
+            <code>
+        interface MyComponentProperties {
+          isValid: boolean;
+          name: string;
+          updateValid: (isValid: boolean) => void;
+          updateName: (name: string) => void;
+          clearAll: () => void;
+        }
+            </code>
+        </pre>
+        <p>Having to pass these properties though three or more components would get old fast. Using a form of intermediate state allows you to condense your properties.</p>
+        <pre>
+            <code>
+        interface CombinedState {
+          isValid: boolean;
+          name: string;
+        }
+
+        interface MyNewComponentProperties {
+          state: CombinedState;
+          dispatcher: (action: IAction) => void;
+        }
+            </code>
+        </pre>
+        <p>The biggest disadvantage to this process is the boilerplate that you need to add for a reducer. It requires you to define your actions, a reducer function, and any payload objects that you are passing back to your reducer.</p>
+        <blockquote>It is a good rule to not use intermediate state unless you have at least five or more properties you are passing to multiple children.</blockquote>
+        <p>
+            Use intermediate state when local state is not enough, but global state is too much.
+        </p>
+    </article-section>
+    <article-section section-title="Global">
+        <p>Global state in Angular, React, or Vue is done via large and complex libraries such as <a href="https://redux.js.org/" target="_blank">Redux</a> or <a href="https://ngrx.io/" target="_blank">NgRx</a>. Vue's implementation <a href="https://pinia.vuejs.org/" target="_blank">Pinia</a> is the easiest to understand because it's just a custom hook under the hood.</p>
+        <blockquote>Global state = reducer + global access</blockquote>
+        <p>
+            All three libraries are the reducer pattern that is injected in your application at a global level. When you add global state, you are allowing for global variables to potentially be accessed in components that should not have access to them.
+        </p>
+        <blockquote>Global state use should be kept to an absolute minimum.</blockquote>
+        <p>
+            Use global state when:
+        </p>
+        <ul>
+            <li>State may need to be used in many areas of the application that are in different component trees</li>
+        </ul>
+        <p>The traditional means for using global state is to handle data that is associated with the authentication of your application. Another example may be the caching of data across browsers sessions.</p>
+    </article-section>
+    <article-section section-title="Conclustion">
+        <p>
+            Choosing the correct state type in your application is a learning process. A vast majority of your state will be in normal local state variables. Only a small percentage should be in intermediate or global state. As always, the more you learn and experiment with each state, the better you will apply it.
+        </p>
+    </article-section>
+</blog-post>

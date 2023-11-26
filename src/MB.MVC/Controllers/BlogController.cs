@@ -135,5 +135,8 @@
 
         [Route("encapsulate-your-requests")]
         public IActionResult EncapsulateYourRequests() => View();
+
+        [Route("differentiating-local-intermediate-and-global-state")]
+        public IActionResult DifferentiatingLocalIntermediateAndGlobalState() => View();
     }
 }
