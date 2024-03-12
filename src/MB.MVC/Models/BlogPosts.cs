@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("FullEncapsulationInEF", "Full Encapsulation in EF"),
                 BlogPost.AddPost("DifferentiatingLocalIntermediateAndGlobalState", "Differentiating Local, Intermediate, and Global State"),
                 BlogPost.AddPost("EncapsulateYourRequests", "Encapsulate Your Requests"),
                 BlogPost.AddPost("HookReturnTypes", "Hook Return Types"),

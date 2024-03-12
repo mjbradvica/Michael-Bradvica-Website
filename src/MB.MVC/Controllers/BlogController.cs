@@ -1,6 +1,7 @@
 ﻿namespace MB.MVC.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
+    using System.Security.Policy;
 
     public class BlogController : Controller
     {
@@ -138,5 +139,8 @@
 
         [Route("differentiating-local-intermediate-and-global-state")]
         public IActionResult DifferentiatingLocalIntermediateAndGlobalState() => View();
+
+        [Route("full-encapsulation-in-ef")]
+        public IActionResult FullEncapsulationInEF() => View();
     }
 }
