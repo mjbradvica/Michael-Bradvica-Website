@@ -8,7 +8,7 @@
         {
             return new List<BlogPost>
             {
-                BlogPost.AddPost("NPredicateBuilderUpdatedTo53", "NPredicateBuilder Updated to 5.3"),
+                // BlogPost.AddPost("NPredicateBuilderUpdatedTo53", "NPredicateBuilder Updated to 5.3"),
                 BlogPost.AddPost("FullEncapsulationInEF", "Full Encapsulation in EF"),
                 BlogPost.AddPost("DifferentiatingLocalIntermediateAndGlobalState", "Differentiating Local, Intermediate, and Global State"),
                 BlogPost.AddPost("EncapsulateYourRequests", "Encapsulate Your Requests"),
