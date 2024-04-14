@@ -60,8 +60,8 @@
             {
                 Id = id;
                 Registration = registration;
-                Configuration = default!;
-                AircraftType = default!;
+                Configuration = Configuration.Empty();
+                AircraftType = AircraftType.Empty();
             }
 
             public Airplane(string registration, Configuration configuration, AircraftType aircraftType)
@@ -82,8 +82,6 @@
             </code>
         </pre>
         <p>The first constructor is used by EF; we use the second constructor when creating the object for the first time.</p>
-        <blockquote>The "default!" is used to tell the compiler not to worry about the nullable aspect of the property.</blockquote>
-        <p>You may also allocate each object with an "empty" version if you do not wish to use the "default!" trick.</p>
         <p>Configuration for navigation and complex properties is done in the same fashion as primitives.</p>
         <pre>
             <code>
