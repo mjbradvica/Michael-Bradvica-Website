@@ -142,7 +142,7 @@
         [Route("full-encapsulation-in-ef")]
         public IActionResult FullEncapsulationInEF() => View();
 
-        // [Route("n-predicate-builder-updated-to-53")]
-        // public IActionResult NPredicateBuilderUpdatedTo53() => View();
+        [Route("n-predicate-builder-updated-to-53")]
+        public IActionResult NPredicateBuilderUpdatedTo53() => View();
     }
 }
