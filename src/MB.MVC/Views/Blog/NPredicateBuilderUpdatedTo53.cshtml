@@ -1,5 +1,43 @@
 ﻿<blog-post title="NPredicateBuilder Updated to 5.3">
     <article-section section-title="NPB Gets a Glow-Up">
+        <p><a href="https://github.com/mjbradvica/NPredicateBuilder" target="_blank">NPredicateBuilder</a> now has its own identity. The construction sign was chosen to highlight NPB's ability to "construct" queries on the fly from smaller pieces. Much like a building is created out of many blocks, your queries and orders are created from multiple single statements.</p>
+    </article-section>
+    <article-section section-title="New Language Version Support">
+        <p>NPB now supports the following dotnet versions:</p>
+        <p>Base Library: Standard 2.0 & 2.1, NET 5-8</p>
+        <p>EF Library: NET 480, 3.1, 5, 6, 7, 8</p>
+    </article-section>
+    <article-section section-title="It's time to ReadMe">
+        <p>
+            The documentation has moved from the wiki to the ReadMe page when you land on the <a href="https://github.com/mjbradvica/NPredicateBuilder" target="_blank">repository main page</a>. (The wiki still exists if you like.)
+        </p>
+    </article-section>
+    <article-section section-title="Navigation Property Support">
+        <p>Did you know?</p>
+        <p>NPredicateBuilder EF queries work for navigation properties as well.</p>
+        <pre>
+            <code>
+        public class MyQueries : BaseQuery&lt;MyEntity&gt;
+        {
+            public MyQueries UseNavigationProperty()
+            {
+                AddAndCriteria(x => x.NavigationProperty.All(y => y.Value == something));
 
+                return this;
+            }
+        }
+            </code>
+        </pre>
+        <p>As long as your navigation joins return a boolean value, they will integrate with NPB seamlessly.</p>
+    </article-section>
+    <article-section section-title="Free Samples">
+        <p>
+            An updated set of samples is available <a href="https://github.com/mjbradvica/NPredicateBuilder/tree/master/samples/NPredicateBuilder.Samples" target="_blank">here</a>.
+        </p>
+    </article-section>
+    <article-section section-title="Continued Purpose">
+        <p>
+            The purpose of NPB continues to be the easiest and simplest way to test, construct, and maintain LINQ queries. You can break down your Where and Order statements into singular entities-creating reusable nuggets that may be tested independently, but used together.
+        </p>
     </article-section>
 </blog-post>
