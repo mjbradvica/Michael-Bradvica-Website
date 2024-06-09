@@ -1,0 +1,184 @@
+﻿<blog-post title="Introducing ChainStrategy">
+    <div class="columns">
+        <div class="column">
+            <image src="https://i.imgur.com/LMX4jJf.png" alt="ChainStrategyLogo"></image>
+        </div>
+        <div class="column"></div>
+        <div class="column"></div>
+    </div>
+    <article-section section-title="Overview">
+        <p><a href="https://github.com/mjbradvica/ChainStrategy" target="_blank">ChainStrategy</a> is a fully-featured implementation of the <a href="https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern" target="_blank">Chain of Responsibility</a> and <a href="https://en.wikipedia.org/wiki/Strategy_pattern" target="_blank">Strategy</a> patterns for dotnet. ChainStrategy allows you to focus on solving problems instead of fussing over boilerplate.</p>
+        <p>Also included is:</p>
+        <ul>
+            <li>Dependency Injection built-in</li>
+            <li>Cancellation Token</li>
+            <li>Built for easy unit testing</li>
+        </ul>
+    </article-section>
+    <article-section section-title="Installation">
+        <p>Install where you need with:</p>
+        <pre>
+            <code>
+    Install-Package ChainStrategy
+            </code>
+        </pre>
+        <p>
+            Integration with the Microsoft DI container is done in one line.
+        </p>
+        <pre>
+            <code>
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddChainStrategy(Assembly.GetExecutingAssembly());
+
+            // Continue setup below
+        }
+    }
+            </code>
+        </pre>
+        <blockquote>
+            You may also pass params of Assemblies if you have multiple projects to register.
+        </blockquote>
+    </article-section>
+    <article-section section-title="Chain of Responsibility">
+        <p>A Chain of Responsibility is best used when you have a complex process that can be broken up into smaller chunks. The biggest advantage of doing so is greater ease of testing.</p>
+        <p>Create a payload object:</p>
+        <pre>
+            <code>
+    public class MyPayload : ChainPayload
+    {
+        // all properties and data
+    }
+            </code>
+        </pre>
+        <p>Create any number of handlers required to complete the operation:</p>
+        <p>Implement the "DoWork" method for each handler and return the payload when finished.</p>
+        <pre>
+            <code>
+    public class MyChainHandler : ChainHandler&lt;MyPayload&gt;
+    {
+        public MyChainHandler(IChainHandler&lt;MyChainPayload&gt;? handler)
+        : base(handler)
+        {
+        }
+
+        public override Task&lt;MyChainPayload&gt; DoWork(MyChainPayload payload, CancellationToken cancellationToken)
+        {
+            // implement steps and update payload
+    
+        return payload;
+        }
+    }
+            </code>
+        </pre>
+        <p>
+            Create a profile to define what steps each chain should use.
+        </p>
+        <pre>
+            <code>
+    public class MyProfile : ChainProfile&lt;MyChainPayload&gt;
+    {
+        public MyProfile()
+        {
+            AddStep&lt;MyFirstHandler&gt;()
+                .AddStep&lt;MySecondHandler&gt;()
+                .AddStep&lt;MyThirdHandler&gt;();
+        }
+    }
+            </code>
+        </pre>
+        <p>Inject the factory interface where you need it and execute.</p>
+        <pre>
+            <code>
+    public class MyService
+    {
+        private readonly IChainFactory _chainFactory;
+
+        public IMyService(IChainFactory chainFactory)
+        {
+            _chainFactory = chainFactory;
+        }
+
+        public async Task Handle()
+        {
+            var result = await _chainFactory.Execute(new MyPayload());
+        }
+    }
+            </code>
+        </pre>
+        <p>This is only a very small example of what chains can accomplish. The official documentation will show you the full power they offer. Samples for chains are available <a href="https://github.com/mjbradvica/ChainStrategy/tree/master/samples/ChainStrategy.Samples" target="_blank">here.</a></p>
+    </article-section>
+    <article-section section-title="Strategy">
+        <p>Strategies are best utilized when you have multiple implementations of the same algorithm or process. You can think of processing credit cards as one such example.</p>
+        <p>Strategies use a request and response to push data up and down.</p>
+        <pre>
+            <code>
+    public class MyResponse
+    {
+        // response properties
+    }
+            </code>
+        </pre>
+        <pre>
+            <code>
+    public class MyRequest : IStrategyRequest&lt;MyResponse&gt;
+    {
+        // request properties
+    }
+            </code>
+        </pre>
+        <p>Similar to chain handlers, implement the appropriate interface and required method.</p>
+        <pre>
+            <code>
+    public class MyStrategyHandler : IStrategyHandler&lt;MyRequest, MyResponse&gt;
+    {
+        public async Task&lt;MyResponse&gt; Handle(MyRequest request, CancellationToken cancellationToken)
+        {
+            // implement and return response
+        }
+    }
+            </code>
+        </pre>
+        <p>Creating a profile for a strategy is done in the same fashion with one caveat; adding a strategy handler requires a predicate to decide which handler will be chosen.</p>
+        <pre>
+            <code>
+    public class MyStrategyProfile : StrategyProfile&lt;MyRequest, MyResponse&gt;
+    {
+        public MyStrategyProfile()
+        {
+            AddStrategy&lt;MySecondHandler&gt;(request => request.Value == 0);
+            AddStrategy&lt;MyFirstHandler&gt;(request => request.Value > 10);
+            AddDefault&lt;MyDefaultHandler&gt;();
+        }
+    }
+            </code>
+        </pre>
+        <p>Starting a strategy follows a similar process as well.</p>
+        <pre>
+            <code>
+    public class MyService
+    {
+        private readonly IStrategyFactory _strategyFactory;
+
+        public MyService(IStrategyFactory strategyFactory)
+        {
+            _strategyFactory = strategyFactory;
+        }
+
+        public async Task Handle()
+        {
+            var result = await _strategyFactory.Execute(new MyRequest());
+        }
+    }
+            </code>
+        </pre>
+    </article-section>
+    <article-section section-title="Conclusion">
+        <p>This article has only briefly covered what ChainStrategy is capable of. A glance at the documentation will show you how you may also implement testing, base handlers, handler reuse, and more.</p>
+        <p>Proper use of both patterns can drastically improve a codebase by allowing you to remove and replace hard-to-test code while improving code quality and test coverage.</p>
+    </article-section>
+</blog-post>

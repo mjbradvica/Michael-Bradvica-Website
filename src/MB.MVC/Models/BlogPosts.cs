@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("IntroducingChainStrategy", "Introducing ChainStrategy"),
                 BlogPost.AddPost("NPredicateBuilderUpdatedTo53", "NPredicateBuilder Updated to 5.3"),
                 BlogPost.AddPost("FullEncapsulationInEF", "Full Encapsulation in EF"),
                 BlogPost.AddPost("DifferentiatingLocalIntermediateAndGlobalState", "Differentiating Local, Intermediate, and Global State"),

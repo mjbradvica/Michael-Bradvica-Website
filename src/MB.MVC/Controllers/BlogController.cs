@@ -144,5 +144,8 @@
 
         [Route("n-predicate-builder-updated-to-53")]
         public IActionResult NPredicateBuilderUpdatedTo53() => View();
+
+        [Route("introducing-chain-strategy")]
+        public IActionResult IntroducingChainStrategy() => View();
     }
 }
