@@ -18,20 +18,20 @@
             <code>
             public class AircraftType
             {
-                public AircraftType(Guid id, AircraftModel model)
+                public AircraftType(Guid id, string model)
                 {
                     Id = id;
                     Model = model;
                 }
 
-                public AircraftType(AircraftModel model)
+                public AircraftType(string model)
                     : this(Guid.NewGuid(), model)
                 {
                 }
 
                 public Guid Id { get; }
 
-                public AircraftModel Model { get; }
+                public string Model { get; }
             }
             </code>
         </pre>
