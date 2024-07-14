@@ -1,0 +1,107 @@
+﻿<blog-post title="Simplifying State Updates for Reference Types">
+    <article-section section-title="The Problem">
+        <p>
+            If you are working in React, Vue, or Angular you've probably had issues with state objects updating and re-rendering properly. This is because reference types in JavaScript/TypeScript must be deep-cloned properly to ensure that framework state hooks can pick up changes properly.
+        </p>
+        <pre>
+            <code>
+        const [state, setState] = useState&lt;MyObject&gt;();
+
+        state.property = "newValue";
+
+        setState(state);
+            </code>
+        </pre>
+        <p>
+            The following code snippet does <strong>not</strong> do what you think it does. Because the "state" object is the same reference, the state hook or "ref" in Vue is unable to detect the change in the property.
+        </p>
+        <p>
+            The correct way to accomplish this state update is to perform a full deep clone of the state object.
+        </p>
+        <pre>
+            <code>
+        const [state, setState] = useState&lt;MyObject&gt;();
+
+        const newState = { ...state };
+        newState.property = "newValue";
+
+        setState(newState);
+            </code>
+        </pre>
+        <p>
+            However, the frustration with this method is magnified when you have state objects with multiple levels that must all be deep-cloned individually. It leads to a serious boilerplate issue that pollutes code bases. Many developers choose to rectify this by serializing and deserializing the object, however, this is a band-aid over a bigger issue.
+        </p>
+        <pre>
+            <code>
+        const [state, setState] = useState&lt;ComplicatedObject&gt;();
+
+        const newState = JSON.parse(JSON.stringify(state)) as ComplicatedObject;
+        newState.property.subProperty = "newValue";
+
+        setState(newState);
+            </code>
+        </pre>
+        <p>
+            This method works, but it is ugly as it requires a suboptimal way of producing a deep clone that must be hard-casted to the correct type.
+        </p>
+    </article-section>
+    <article-section section-title="Solution">
+        <p>
+            There is a built-in method in Node that natively provides deep clone capability without the code smells. We can wrap this method in a custom hook to give us consistent state updates without future headaches.
+        </p>
+        <blockquote>
+            StructuredClone is a new addition to Node, so this method may not work for all projects.
+        </blockquote>
+        <pre>
+            <code>
+        import { useState } from "react";
+
+        export default function useDeepState&lt;T&gt;(
+          initialState: T
+        ): [T, (newState: T) => void] {
+          const [state, setState] = useState&lt;T&gt;(initialState);
+
+          const updateState = (newState: T): void => {
+            setState(structuredClone&lt;T&gt;(newState));
+          };
+
+          return [state, updateState];
+        }
+            </code>
+        </pre>
+        <p>
+            If you are using Vue...
+        </p>
+        <pre>
+            <code>
+        import { Ref, ref } from "vue";
+
+        export default function useDeepState&lt;T&gt;(
+          initialState: T
+        ): [Ref&lt;T&gt;, (newState: T) => void] {
+          const state = ref&lt;T&gt;(initialState) as Ref&lt;T&gt;;
+
+          const setState = (newState: T): void => {
+            state.value = structuredClone&lt;T&gt;(newState);
+          };
+
+          return [state, setState];
+        }
+            </code>
+        </pre>
+        <p>
+            The <a href="https://developer.mozilla.org/en-US/docs/Web/API/structuredClone" target="_blank">StructuredClone</a> method is usable in most modern front-end frameworks to give developers a type-safe, native implementation of the deep clone algorithm. We have simply wrapped the method in a new hook that may be reused in our application.
+        </p>
+        <blockquote>
+            This new hook is only required for reference types. Primitives need not apply.
+        </blockquote>
+        <p>
+            With this new implementation, you may update any state reference type by simply changing the property or field. No more custom cloning, JSON workarounds, or frustration.
+        </p>
+    </article-section>
+    <article-section section-title="Conclusion">
+        <p>
+            State fundamentals can be tricky in front-end frameworks. State for reference types has a few extra caveats that if not properly understood can lead to frustration and undefined behavior in applications. Having a consistent and reliable method for updating reference types via StructuredClone is one technique for reducing developer frustration and confusion.
+        </p>
+    </article-section>
+</blog-post>

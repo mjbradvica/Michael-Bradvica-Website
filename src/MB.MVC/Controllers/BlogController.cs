@@ -147,5 +147,8 @@
 
         [Route("introducing-chain-strategy")]
         public IActionResult IntroducingChainStrategy() => View();
+
+        [Route("simplifying-state-updates-for-reference-types")]
+        public IActionResult SimplifyingStateUpdatesForReferenceTypes() => View();
     }
 }

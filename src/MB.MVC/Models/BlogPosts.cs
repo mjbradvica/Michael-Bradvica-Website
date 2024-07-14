@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("SimplifyingStateUpdatesForReferenceTypes", "Simplifying State Updates for References Types"),
                 BlogPost.AddPost("IntroducingChainStrategy", "Introducing ChainStrategy"),
                 BlogPost.AddPost("NPredicateBuilderUpdatedTo53", "NPredicateBuilder Updated to 5.3"),
                 BlogPost.AddPost("FullEncapsulationInEF", "Full Encapsulation in EF"),
