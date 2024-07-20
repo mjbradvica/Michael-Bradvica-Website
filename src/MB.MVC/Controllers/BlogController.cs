@@ -150,5 +150,8 @@
 
         [Route("simplifying-state-updates-for-reference-types")]
         public IActionResult SimplifyingStateUpdatesForReferenceTypes() => View();
+
+        [Route("prefer-empty-objects-over-compiler-tricks")]
+        public IActionResult PreferEmptyObjectsOverCompilerTricks() => View();
     }
 }

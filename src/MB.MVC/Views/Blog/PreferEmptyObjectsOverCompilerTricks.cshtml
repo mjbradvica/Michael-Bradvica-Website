@@ -1,0 +1,96 @@
+﻿<blog-post title="Prefer Empty Objects over Compiler Tricks">
+    <article-section section-title="Listen to the Compiler">
+        <p>
+            There are certain situations in C# where you have nullable references that are not initialized in the constructor. The most common situation is Entity Framework navigation properties.
+        </p>
+        <p>
+            The following shows an Entity Framework entity "Airplane" that has a navigation property of "AircraftType".
+        </p>
+        <pre>
+            <code>
+        public class Airplane
+        {
+            // other fields and methods
+
+            public AircraftType AircraftType { get; }
+        }
+            </code>
+        </pre>
+        <p>
+            This will produce a <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/nullable-warnings?f1url=%3FappId%3Droslyn%26k%3Dk(CS8618)" target="_blank">CS8618 - Resolve Nullable Warnings</a> error. The compiler is telling us we have a nullable object that is leaving the constructor without being initialized. This will throw a null reference exception if we attempt to de-reference the object.
+        </p>
+        <p>
+            The issue is that <strong>we</strong> know that the object will be initialized, but the compiler does not.
+        </p>
+        <p>
+            The most common solution is to use the "default!" trick to tell the compiler to ignore this nullable situation.
+        </p>
+        <pre>
+            <code>
+        public class Airplane
+        {
+            public Airplane()
+            {
+                AircraftType = default!;
+            }
+
+            public AircraftType AircraftType { get; }
+        }
+            </code>
+        </pre>
+        <p>
+            This is not ideal due to silencing the compiler. We are leaving our application in a possible situation of undefined behavior. Unit testing or running the application without the database will yield possible errors. We need to ensure that de-referencing the property in any situation will not throw exceptions.
+        </p>
+        <pre>
+            <code>
+        var airplane = new Airplane();
+
+        // Null reference exception will occur.
+        var aircraftType = airplane.AircraftType;
+            </code>
+        </pre>
+        <p>
+            Putting null checks everywhere in your code is not an ideal situation either. Due to each null check requiring a unit test against it.
+        </p>
+        <blockquote>
+            You should adhere to a strict policy of putting the compiler first. Nothing, including you, is above it.
+        </blockquote>
+        <p>
+            Instead of using the "default!" trick, use an object that contains empty data to satisfy the compiler. This is a variant of the <a href="https://en.wikipedia.org/wiki/Null_object_pattern" target="_blank">null object pattern.</a> Using an empty object will use default values in place of real-life data.
+        </p>
+        <pre>
+            <code>
+        public class AircraftType
+        {
+            // implementation
+
+            public static AircraftType EmptyObject()
+            {
+                return new AircraftType(Guid.Empty(), string.Empty, 0);
+            }
+        }
+            </code>
+        </pre>
+        <p>
+            Your other class will be updated like so:
+        </p>
+        <pre>
+            <code>
+        public class Airplane
+        {
+            public Airplane()
+            {
+                AircraftType = AircraftType.EmptyObject();
+            }
+
+            public AircraftType AircraftType { get; }
+        }
+            </code>
+        </pre>
+    </article-section>
+    <article-section section-title="Conclusion">
+        <p>
+            Using empty objects over silencing the compiler will lead to more consistent behavior in your application. Warnings from the compiler are a stern indicator that a change is needed. It is of the utmost importance to listen to what your application is telling you. Transforming your code to be implementation agnostic is one way to future-proof yourself and others on your team from future headaches.
+        </p>
+    </article-section>
+</blog-post>
