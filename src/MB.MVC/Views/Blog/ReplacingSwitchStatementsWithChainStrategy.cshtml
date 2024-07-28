@@ -1,0 +1,204 @@
+﻿<blog-post title="Replacing Switch Statements with ChainStrategy">
+    <article-section section-title="Problem Statement">
+        <blockquote>
+            This article is a quick introduction and example of implementing a strategy via the <a href="https://github.com/mjbradvica/ChainStrategy" target="_blank">ChainStrategy</a> library. Please see the official documentation for more information and samples.
+        </blockquote>
+        <p>
+            Sometimes we have use cases in our code that lead to natural logical branches where a process separates into sub-processes and may return a common response.
+        </p>
+        <p>
+            In the example below, a service implementing a use-case runs conditional logic depending on what the request is doing.
+        </p>
+        <pre>
+            <code>
+        public class TrackingService
+        {
+            private readonly IUpsDependency _upsDependency;
+            private readonly IFedexDependency _fedExDependency;
+            private readonly IUspsDependency _uspsDependency;
+
+            public TrackingService(
+                IUpsDependency upsDependency,
+                IFedexDependency fedExDependency,
+                IUspsDependency uspsDependency
+            )
+            {
+                _upsDependency = upsDependency;
+                _fedexDependency = fedexDependency;
+                _uspsDependency = uspsDependency;
+            }
+
+            public TrackingResponse TrackPackage(TrackingRequest request)
+            {
+                if (request.trackingNumber == upsCode)
+                {
+                    return TrackUps();
+                }
+                else if (request.trackingNumber == fedExCode)
+                {
+                    return TrackFedEx();
+                }
+
+                return TrackUsps();
+            }
+
+            private TrackingResponse TrackUps()
+            {
+                // Ups implementation
+            }
+
+            private TrackingResponse TrackFedEx()
+            {
+                // FedEx implementation
+            }
+
+            private TrackingResponse TrackUsps()
+            {
+                // Usps implementation
+            }
+        }
+            </code>
+        </pre>
+        <p>
+            This code, while workable, is suboptimal. The problems with this code sample are:
+        </p>
+        <ul>
+            <li>
+                We have private methods when we should have public ones
+            </li>
+            <li>
+                Unit testing requires mocking dependencies which may not be used
+            </li>
+        </ul>
+        <p>
+            A strategy here would allow us to break each condition into an individual handler. This would transform our use case into smaller chunks that each fulfill a single responsibility. This allows us to easily unit test each handler without having to stub and mock dependencies that each condition does not rely on.
+        </p>
+    </article-section>
+    <article-section section-title="Enter the Strategy">
+        <p>
+            The strategy pattern is a simple way to employ an object-oriented switch statement. You can divide a problem into multiple handlers, each with its specific dependencies. This directly leads to easier automated testing because each test can focus on a single purpose.
+        </p>
+        <p>
+            A Strategy is best used when:
+        </p>
+        <ul>
+            <li>
+                You have conditional logic that has complex processes
+            </li>
+            <li>
+                Each process shares common input and output
+            </li>
+        </ul>
+        <blockquote>
+            The Strategy pattern is a low-usage pattern. It does not need to replace every switch statement in your code.
+        </blockquote>
+        <p>Every strategy has a dedicated request and response object.</p>
+        <pre>
+            <code>
+        public class TrackingResponse
+        {
+            // response properties
+        }
+            </code>
+        </pre>
+        <pre>
+            <code>
+        public class TrackingRequest : IStrategyRequest&lt;TrackingResponse&gt;
+        {
+            // request properties
+        }
+            </code>
+        </pre>
+        <p>
+            For each possible logical condition, we will define a custom handler that only uses the required dependencies to fulfill each logical branch.
+        </p>
+        <pre>
+            <code>
+        public class FedexTrackingHandler : IStrategyHandler&lt;TrackingRequest, TrackingResponse&gt;
+        {
+            private readonly IFedexDependency _fedExDependency;
+
+            public FedexTrackingHandler(IFedexDependency fedExDependency)
+            {
+                _fedexDependency = fedexDependency;
+            }
+
+            public async Task&lt;TrackingResponse&gt; Handle(TrackingRequest request, CancellationToken cancellationToken)
+            {
+                // implementation
+            }
+        }
+            </code>
+        </pre>
+        <p>
+            Testing each handler is a lot easier than trying to write tests for a larger service because you are mocking and testing fewer dependencies and logical branches.
+        </p>
+        <pre>
+            <code>
+        [TestClass]
+        public class FedExTrackingHandlerTests
+        {
+            private readonly Mock&lt;IFedexDependency&gt; _fedex;
+
+            public FedexTrackingHandlerTests()
+            {
+                _fedex = new Mock&lt;IFedexDependency&gt;();
+            }
+
+            [TestMethod]
+            public void Handler_Condition_IsCorrect()
+            {
+                // implement tests
+            }
+        }
+            </code>
+        </pre>
+        <p>
+            Finally, we need to create a profile which will be used to determine what handler to use.
+        </p>
+        <pre>
+            <code>
+        public class TrackingProfile
+        {
+            public TrackingProfile()
+            {
+                AddStrategy&lt;FedExTrackingHandler&gt;(x => x.TrackingNumber == fedExCode);
+                AddStrategy&lt;UpsTrackingHandler&gt;(x => x.TrackingNumber == upsCode);
+                AddStrategy&lt;UspsTrackingHandler&gt;(x => x.TrackingNumber == uspsCode);
+            }
+        }
+            </code>
+        </pre>
+        <p>
+            Utilizing our new strategy from a controller is easy:
+        </p>
+        <pre>
+            <code>
+        [ApiController]
+        [Route("[controller]")]
+        public class PackageController : ControllerBase
+        {
+            private readonly IStrategyFactory _factory;
+
+            public PackageController(IStrategyFactory factory)
+            {
+                _factory = factory;
+            }
+
+            [HttpGet("{trackingNumber:int}")]
+            public async Task&lt;IActionResult&gt; TrackPackage(int trackingNumber)
+            {
+                var response = await _factory.Execute(new TrackingRequest(trackingNumber));
+
+                return Ok(response);
+            }
+        }
+            </code>
+        </pre>
+    </article-section>
+    <article-section section-title="Conclusion">
+        <p>
+            Use cases with complex conditional logic tend to lead to large services that tend to have lots of dependencies and private methods. This results in a frustrating testing experience when dealing with lots of mocking and brittle conditional testing. A Strategy may help to alleviate this situation by breaking up a problem into smaller chunks that can be implemented and tested in isolation from other code blocks. This leads to a stronger code base that is easier to maintain in the long run.
+        </p>
+    </article-section>
+</blog-post>

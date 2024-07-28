@@ -8,6 +8,7 @@
         {
             return new List<BlogPost>
             {
+                BlogPost.AddPost("ReplacingSwitchStatementsWithChainStrategy", "Replacing Switch Statements with ChainStrategy"),
                 BlogPost.AddPost("PreferEmptyObjectsOverCompilerTricks", "Prefer Empty Objects over Compiler Tricks"),
                 BlogPost.AddPost("SimplifyingStateUpdatesForReferenceTypes", "Simplifying State Updates for References Types"),
                 BlogPost.AddPost("IntroducingChainStrategy", "Introducing ChainStrategy"),

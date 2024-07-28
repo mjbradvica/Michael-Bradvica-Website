@@ -153,5 +153,8 @@
 
         [Route("prefer-empty-objects-over-compiler-tricks")]
         public IActionResult PreferEmptyObjectsOverCompilerTricks() => View();
+
+        [Route("replacing-switch-statements-with-chainStrategy")]
+        public IActionResult ReplacingSwitchStatementsWithChainStrategy() => View();
     }
 }
